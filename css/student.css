@@ -1,0 +1,343 @@
+#assets-dice {
+    color: #333;
+    background-color: #f6c354;
+    border-color: #f6c354;
+}
+
+#assets-dice:hover, #assets-dice:focus, #assets-dice:active:hover, #assets-dice:disabled {
+    color: #333;
+    background-color: #daaf4c;
+    border-color: #daaf4c;
+}
+
+#risk-dice {
+    color: #fff;
+    background-color: #ec706f;
+    border-color: #ec706f;
+}
+
+#risk-dice:hover, #risk-dice:focus, #risk-dice:active:hover, #risk-dice:disabled {
+    color: #fff;
+    background-color: #cd6464;
+    border-color: #cd6464;
+}
+
+.btn-warning {
+    color: #333;
+    background-color: #ffdd5b;
+    border-color: #ffdd5b;
+}
+
+.btn-warning:hover, .btn-warning:focus, .btn-warning:active:hover, .btn-warning:disabled {
+    color: #333;
+    background-color: #d8bc4f;
+    border-color: #d8bc4f;
+}
+
+.text-warning {
+    color: #ffdd5b;
+}
+
+.btn-warning {
+    color: #333;
+    background-color: #ffdd5b;
+    border-color: #ffdd5b;
+}
+
+.btn-warning:hover, .btn-warning:focus, .btn-warning:active:hover, .btn-warning:disabled {
+    color: #333;
+    background-color: #d8bc4f;
+    border-color: #d8bc4f;
+}
+
+.text-info {
+    color: #60b5ca;
+}
+
+.btn-info {
+    color: #fff;
+    background-color: #60b5ca;
+    border-color: #60b5ca;
+}
+.btn-info:hover, .btn-info:focus, .btn-info:active:hover, .btn-info:disabled {
+    color: #fff;
+    background-color: #57a5b9;
+    border-color: #57a5b9;
+}
+
+.bg-blue {
+    background-color: #60b5ca;
+}
+
+.bg-yellow {
+    background-color: #ffdd5b;
+}
+
+.bg-green {
+    background-color: #019c94;
+}
+
+
+html {
+    touch-action: manipulation;
+}
+
+meta[name="viewport"] {
+    user-scalable: no;
+    maximum-scale: 1.0;
+}
+
+body {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow-x: hidden;
+    background-color: #333;
+}
+
+#content {
+    display: none;
+}
+
+#loading {
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.h-10 {
+    height: 10vh;
+}
+
+.stock-card {
+    border-top: 10px solid #60b5ca;
+}
+
+.house-card {
+    border-top: 10px solid #ffdd5b;
+}
+
+#insurance-select, #save-select {
+    color: red;
+}
+
+.card-shadow {
+    -webkit-box-shadow: inset 0px 0px 4px 3px rgba(0,0,0,0.46);
+    -moz-box-shadow: inset 0px 0px 4px 3px rgba(0,0,0,0.46);
+    box-shadow: inset 0px 0px 4px 3px rgba(0,0,0,0.46);
+}
+
+.border-color-e9ecef {
+    border-color: #e9ecef
+}
+
+.text-red {
+    color: red;
+}
+
+
+
+
+/* 123 */
+
+.modal-80vw {
+    max-width: 80vw;
+}
+
+.modal-60vh {
+    height: 60vh;
+}
+
+
+
+.dice-panel {
+    height: 100%;
+}
+
+.dice {
+    position: relative;
+    width: calc(40vh * 0.8);
+    height: calc(40vh * 0.8);
+    transform-style: preserve-3d;
+    transition: transform 1s;
+    cursor: pointer;
+}
+
+.dot {
+    position: absolute;
+    width: calc(8vh * 0.8);
+    height: calc(8vh * 0.8);
+    margin: calc(-4vh * 0.8) calc(2vh * 0.8) calc(2vh * 0.8) calc(-4vh * 0.8);
+    border-radius: 50%;
+    background-color: #fff;
+    box-shadow: inset 2px 2px #aaa;
+}
+
+.dice-one {
+    position: absolute;
+}
+
+.dice-two {
+    position: absolute;
+}
+
+.dice-one .side {
+    position: absolute;
+    background-color: #f6c354;
+    border-radius: 5px;
+    width: calc(40vh * 0.8);
+    height: calc(40vh * 0.8);
+    border: 1px solid #e5e5e5;
+    text-align: center;
+    line-height: 2em;
+}
+
+.dice-two .side {
+    position: absolute;
+    background-color: #ec706f;
+    border-radius: 5px;
+    width: calc(40vh * 0.8);
+    height: calc(40vh * 0.8);
+    border: 1px solid #e5e5e5;
+    text-align: center;
+    line-height: 2em;
+}
+
+.side:nth-child(1) {
+    transform: translateZ(calc(20vh * 0.8));
+}
+
+.side:nth-child(6) {
+    transform: rotateY(90deg) translateZ(calc(20vh * 0.8));
+}
+
+.side:nth-child(3) {
+    transform: rotateY(-90deg) translateZ(calc(20vh * 0.8));
+}
+
+.side:nth-child(4) {
+    transform: rotateX(90deg) translateZ(calc(20vh * 0.8));
+}
+
+.side:nth-child(5) {
+    transform: rotateX(-90deg) translateZ(calc(20vh * 0.8));
+}
+
+.side:nth-child(2) {
+    transform: rotateY(-180deg) translateZ(calc(20vh * 0.8));
+}
+/* 
+.show-1 {
+    transform: rotateX(720deg) rotateZ(-720deg);
+}
+
+.show-6 {
+    transform: rotateX(720deg) rotateZ(-720deg);
+    transform: rotateX(-900deg) rotateZ(1080deg);
+}
+
+.show-3 {
+    transform: rotateY(-450deg) rotateZ(-1440deg);
+    transform: rotateX(720deg) rotateZ(-720deg);
+}
+
+.show-4 {
+    transform: rotateX(720deg) rotateZ(-720deg);
+    transform: rotateY(810deg) rotateZ(720deg);
+}
+
+.show-5 {
+    transform: rotateX(720deg) rotateZ(-720deg);
+    transform: rotateX(-810deg) rotateZ(-1080deg);
+}
+
+.show-2 {
+    transform: rotateX(720deg) rotateZ(-720deg);
+    transform: rotateX(450deg) rotateZ(-720deg);
+} */
+
+.show-1 {
+  transform: rotateX(720deg) rotateZ(-720deg) rotateY(360deg); /* 2圈X, 2圈Z, 1圈Y */
+}
+
+.show-2 {
+  transform: rotateX(450deg) rotateZ(-720deg) rotateY(720deg); /* 1.25圈X, 2圈Z, 2圈Y */
+}
+
+.show-3 {
+  transform: rotateY(-450deg) rotateZ(-1440deg) rotateX(1080deg); /* -1.25圈Y, -4圈Z, 3圈X */
+}
+
+.show-4 {
+  transform: rotateY(810deg) rotateZ(720deg) rotateX(1080deg); /* 2.25圈Y, 2圈Z, 3圈X */
+}
+
+.show-5 {
+  transform: rotateX(-810deg) rotateZ(-1080deg) rotateY(1080deg); /* -2.25圈X, -3圈Z, 3圈Y */
+}
+
+.show-6 {
+  transform: rotateX(-900deg) rotateZ(1080deg) rotateY(1080deg); /* -2.5圈X, 3圈Z, 3圈Y */
+}
+
+.two-1, .three-1, .four-1, .five-1, .six-1 {
+    top: 20%;
+    left: 20%;
+}
+
+.four-3, .five-3, .six-4 {
+    top: 20%;
+    left: 80%;
+}
+
+.one-1, .three-2, .five-5 {
+    top: 50%;
+    left: 50%;
+}
+
+.four-2, .five-2, .six-3 {
+    top: 80%;
+    left: 20%;
+}
+
+.two-2, .three-3, .four-4, .five-4, .six-6 {
+    top: 80%;
+    left: 80%;
+}
+
+.six-2 {
+    top: 50%;
+    left: 20%;
+}
+
+.six-5 {
+    top: 50%;
+    left: 80%;
+}
+
+.star {
+    width: 5vw;
+    height: auto;
+    position: absolute;
+    bottom: 50px;
+    right: 50px;
+    cursor: default;
+    /* 初始為默認游標 */
+    z-index: 999;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px #ffffff solid;
+    padding: 2px;
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1); */
+}
+
+.table>:not(:last-child)>:last-child>*, th, td {
+  border: 1px solid #ddd;
+}
+
+.bg-eee {
+    background-color: #eee;
+}

@@ -1,0 +1,119 @@
+* {
+    font-weight: 700 !important;
+}
+
+.btn-warning {
+    color: #333;
+    background-color: #f6c354;
+    border-color: #f6c354;
+}
+.btn-warning:hover, .btn-warning:focus, .btn-warning:active:hover, .btn-warning:disabled {
+    color: #333;
+    background-color: #daaf4c;
+    border-color: #daaf4c;
+}
+
+.btn-danger {
+    color: #fff;
+    background-color: #ec706f;
+    border-color: #ec706f;
+}
+.btn-danger:hover, .btn-danger:focus, .btn-danger:active:hover, .btn-danger:disabled {
+    color: #fff;
+    background-color: #cd6464;
+    border-color: #cd6464;
+}
+ 
+.btn-success {
+    color: #fff;
+    background-color: #019c94;
+    border-color: #019c94;
+}
+.btn-success:hover, .btn-success:focus, .btn-success:active:hover, .btn-success:disabled {
+    color: #fff;
+    background-color: #00807a;
+    border-color: #00807a;
+}
+
+/* 設定整個頁面內容水平置中、內寬為 30 像素：*/
+body {
+    position: relative;
+    width: 100vw;
+    /* height: 100vh; */
+    height: calc(var(--vh,1vh) * 100);
+    overflow: hidden;
+    background-color: #333;
+}
+
+.map-sec {
+    background-image: url('../static/map.svg');
+    background-size: contain;
+    /* 使背景圖片覆蓋整個容器 */
+    background-position: center;
+    /* 使背景圖片居中顯示 */
+    background-repeat: no-repeat;
+    /* 防止圖片重複 */
+}
+
+.avatar {
+    width: 2.5vw;
+    height: auto;
+    position: absolute;
+    bottom: 50px;
+    right: 50px;
+    cursor: default;
+    /* 初始為默認游標 */
+    z-index: 999;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px #ffffff solid;
+    padding: 2px;
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1); */
+}
+
+.card-sec {
+    background-image: url('../static/stock-1.png');
+    background-size: contain;
+    /* 使背景圖片覆蓋整個容器 */
+    background-position: center;
+    /* 使背景圖片居中顯示 */
+    background-repeat: no-repeat;
+    /* 防止圖片重複 */
+}
+
+#card-heading {
+    height: 50px;
+    background-color: red;
+}
+
+#card-body {
+    background-color: blue;
+}
+
+
+.card {
+    margin: 5px 0;
+}
+
+/* 設定文字的顏色為淡黑色 */
+p {
+    color: #555555;
+}
+
+#content {
+    display: none;
+}
+
+#loading, #card-loading {
+    width: 0;
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#insurance-round-select {
+    color: red;
+}

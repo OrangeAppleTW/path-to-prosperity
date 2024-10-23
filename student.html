@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/x-icon" href="./static/favicon.png" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
+      integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaCcl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="./css/student.css" />
+    <title>學生｜財富之路</title>
+  </head>
+  <body>
+    <div id="loading">
+      <div class="spinner-border text-light" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <div id="content" class="h-100">
+      <img
+        src="./static/star.svg"
+        class="star"
+        id="star"
+        alt="star"
+        draggable="false"
+      />
+      <div class="container-fluid h-100">
+        <div class="row p-4 pb-0 d-flex justify-content-between">
+          <div class="col-12 mb-3">
+            <div class="card card-shadow bg-dark p-2">
+              <div class="card-body row">
+                <div class="col-6 mb-3">
+                  <select
+                    id="game-select"
+                    class="w-100 form-select form-select-lg"
+                    aria-label=".form-select-lg example"
+                  ></select>
+                </div>
+                <div class="col-2 mb-3">
+                  <button id="assets-dice" class="btn btn-lg w-100">
+                    資產骰子
+                  </button>
+                </div>
+                <div class="col-2 mb-3">
+                  <button id="risk-dice" class="btn btn-lg w-100">
+                    風險骰子
+                  </button>
+                </div>
+                <div class="col-2 mb-3">
+                  <div class="btn-group w-100" role="group">
+                    <button
+                      id="btnGroupDrop1"
+                      type="button"
+                      class="btn btn-lg btn-secondary w-100 dropdown-toggle"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      更多功能
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                      <li>
+                        <a id="reset-game" class="dropdown-item" href="#"
+                          >重新一局</a
+                        >
+                      </li>
+                      <li>
+                        <a id="selling-record" class="dropdown-item" href="#"
+                          >賣出紀錄</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                  <!-- <button id="reset-game" class="btn btn-lg btn-secondary w-100">重新一局</button> -->
+                </div>
+                <div class="col-6 mb-3">
+                  <select
+                    id="save-select"
+                    class="w-100 form-select form-select-lg"
+                    aria-label=".form-select-lg example"
+                  ></select>
+                </div>
+                <div class="col-6 mb-3">
+                  <select
+                    id="insurance-select"
+                    class="w-100 form-select form-select-lg"
+                    aria-label=".form-select-lg example"
+                  ></select>
+                </div>
+                <div class="col-6 mb-0">
+                  <select
+                    id="stock-round-select"
+                    class="w-100 form-select form-select-lg"
+                    aria-label=".form-select-lg example"
+                  ></select>
+                </div>
+                <div class="col-6 mb-0">
+                  <select
+                    id="house-round-select"
+                    class="w-100 form-select form-select-lg"
+                    aria-label=".form-select-lg example"
+                  ></select>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-0 p-4 pt-0 pb-0 d-flex justify-content-between">
+          <div class="col-12 mb-3">
+            <div class="card card-shadow bg-dark p-2">
+              <div class="card-body row">
+                <div class="col-4 mb-3">
+                  <div class="input-group input-group-lg">
+                    <span
+                      class="input-group-text bg-green text-white border-0"
+                      id="inputGroup-sizing-lg"
+                      >不在銀行的現金</span
+                    >
+                    <input
+                      step="50"
+                      min="0"
+                      value="0"
+                      type="number"
+                      class="form-control"
+                      aria-label="Sizing example input"
+                      aria-describedby="inputGroup-sizing-lg"
+                    />
+                  </div>
+                </div>
+                <div class="col-4 mb-3">
+                  <div class="input-group input-group-lg">
+                    <span class="input-group-text" id="inputGroup-sizing-lg"
+                      >現金以外的資產</span
+                    >
+                    <input
+                      min="0"
+                      value="0"
+                      type="number"
+                      class="form-control"
+                      aria-label="Sizing example input"
+                      aria-describedby="inputGroup-sizing-lg"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="col-4 mb-3">
+                  <div class="input-group input-group-lg">
+                    <span class="input-group-text" id="inputGroup-sizing-lg"
+                      >加總所有的資產</span
+                    >
+                    <input
+                      min="0"
+                      value="0"
+                      type="number"
+                      class="form-control"
+                      aria-label="Sizing example input"
+                      aria-describedby="inputGroup-sizing-lg"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="col-6 mb-0">
+                  <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-blue text-white border-0"
+                      >這個階段的所有股利</span
+                    >
+                    <input
+                      min="0"
+                      value="0"
+                      type="number"
+                      class="form-control border-color-e9ecef"
+                      aria-label="Sizing example input"
+                      aria-describedby="inputGroup-sizing-lg"
+                      readonly
+                    />
+                  </div>
+                </div>
+                <div class="col-6 mb-0">
+                  <div class="input-group input-group-lg">
+                    <span class="input-group-text bg-yellow text-dark border-0"
+                      >這個階段的所有房租</span
+                    >
+                    <input
+                      min="0"
+                      value="0"
+                      type="number"
+                      class="form-control border-color-e9ecef"
+                      aria-label="Sizing example input"
+                      aria-describedby="inputGroup-sizing-lg"
+                      readonly
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-2 p-4 pt-0 pb-0 d-flex justify-content-between">
+          <div class="col-6">
+            <div class="row mb-3">
+              <div class="col-12">
+                <div class="input-group">
+                  <select class="form-select form-select-lg" id="stock-select">
+                    <option selected disabled>選擇要購買的股票</option>
+                  </select>
+                  <button id="add-stock" class="btn btn-lg btn-info col-2">
+                    買入
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div id="stocklist" class="row"></div>
+          </div>
+          <div class="col-6">
+            <div class="row mb-3">
+              <div class="col-12">
+                <div class="input-group">
+                  <select class="form-select form-select-lg" id="house-select">
+                    <option selected disabled>選擇要購買的房屋</option>
+                  </select>
+                  <button id="add-house" class="btn btn-lg btn-warning col-2">
+                    買入
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div id="houselist" class="row"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal for confirmation -->
+      <div
+        class="modal fade"
+        id="deleteConfirmModal"
+        tabindex="-1"
+        aria-labelledby="deleteConfirmModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteConfirmModalLabel">賣出確認</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div id="info1"></div>
+              <div id="info2"></div>
+              <div id="info3"></div>
+              <div id="info4" class="text-red"></div>
+              <div id="info5"></div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                取消
+              </button>
+              <button type="button" class="btn btn-danger" id="confirm-delete">
+                確認
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="modal fade"
+        id="resetConfirmModal"
+        tabindex="-1"
+        aria-labelledby="resetConfirmModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="resetConfirmModalLabel">
+                重新一局確認
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              您確定要重新一局嗎？此操作將清除所有資料。
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                取消
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                id="confirm-reset"
+                disabled
+              >
+                確認（3）
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="modal fade"
+        id="sellingRecordModal"
+        tabindex="-1"
+        aria-labelledby="sellingRecordModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="sellingRecordModalLabel">賣出紀錄</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div class="row p-3 pt-2">
+                <table class="table text-center m-0">
+                  <thead>
+                    <tr class="bg-eee">
+                      <th scope="col">類型</th>
+                      <th scope="col">編號</th>
+                      <th scope="col">名稱</th>
+                      <th scope="col">賣出</th>
+                    </tr>
+                  </thead>
+                  <tbody id="selllist"></tbody>
+                </table>
+                <p class="p-0 pt-2" style="font-size: 0.8rem">
+                  ＊依照賣出順序由新到遠排序
+                </p>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                關閉
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="modal fade"
+        id="assetsDiceModal"
+        tabindex="-1"
+        aria-labelledby="assetsDiceModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered modal-80vw">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="assetsDiceModalLabel">
+                請點擊骰子開始擲骰
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body modal-60vh">
+              <div
+                class="dice-panel d-flex justify-content-center align-items-center"
+              >
+                <div id="dice1" class="dice dice-one">
+                  <div id="dice-one-side-one" class="side one">
+                    <div class="dot one-1"></div>
+                  </div>
+                  <div id="dice-one-side-two" class="side two">
+                    <div class="dot two-1"></div>
+                    <div class="dot two-2"></div>
+                  </div>
+                  <div id="dice-one-side-three" class="side three">
+                    <div class="dot three-1"></div>
+                    <div class="dot three-2"></div>
+                    <div class="dot three-3"></div>
+                  </div>
+                  <div id="dice-one-side-four" class="side four">
+                    <div class="dot four-1"></div>
+                    <div class="dot four-2"></div>
+                    <div class="dot four-3"></div>
+                    <div class="dot four-4"></div>
+                  </div>
+                  <div id="dice-one-side-five" class="side five">
+                    <div class="dot five-1"></div>
+                    <div class="dot five-2"></div>
+                    <div class="dot five-3"></div>
+                    <div class="dot five-4"></div>
+                    <div class="dot five-5"></div>
+                  </div>
+                  <div id="dice-one-side-six" class="side six">
+                    <div class="dot six-1"></div>
+                    <div class="dot six-2"></div>
+                    <div class="dot six-3"></div>
+                    <div class="dot six-4"></div>
+                    <div class="dot six-5"></div>
+                    <div class="dot six-6"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="modal fade"
+        id="riskDiceModal"
+        tabindex="-1"
+        aria-labelledby="riskDiceModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered modal-80vw">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="riskDiceModalLabel">
+                請點擊骰子開始擲骰
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body modal-60vh">
+              <div
+                class="dice-panel d-flex justify-content-center align-items-center"
+              >
+                <div id="dice2" class="dice dice-two">
+                  <div id="dice-two-side-one" class="side one">
+                    <div class="dot one-1"></div>
+                  </div>
+                  <div id="dice-two-side-two" class="side two">
+                    <div class="dot two-1"></div>
+                    <div class="dot two-2"></div>
+                  </div>
+                  <div id="dice-two-side-three" class="side three">
+                    <div class="dot three-1"></div>
+                    <div class="dot three-2"></div>
+                    <div class="dot three-3"></div>
+                  </div>
+                  <div id="dice-two-side-four" class="side four">
+                    <div class="dot four-1"></div>
+                    <div class="dot four-2"></div>
+                    <div class="dot four-3"></div>
+                    <div class="dot four-4"></div>
+                  </div>
+                  <div id="dice-two-side-five" class="side five">
+                    <div class="dot five-1"></div>
+                    <div class="dot five-2"></div>
+                    <div class="dot five-3"></div>
+                    <div class="dot five-4"></div>
+                    <div class="dot five-5"></div>
+                  </div>
+                  <div id="dice-two-side-six" class="side six">
+                    <div class="dot six-1"></div>
+                    <div class="dot six-2"></div>
+                    <div class="dot six-3"></div>
+                    <div class="dot six-4"></div>
+                    <div class="dot six-5"></div>
+                    <div class="dot six-6"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+      crossorigin="anonymous"
+    ></script>
+    <script src="./js/student.js"></script>
+  </body>
+</html>

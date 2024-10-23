@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" href="./static/favicon.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css"
+      integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="./css/teacher.css" />
+    <title>老師｜財富之路</title>
+  </head>
+  <body>
+    <div id="loading">
+      <div class="spinner-border text-light" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <div id="content" class="h-100">
+      <img
+        src="./static/avatar-8.png"
+        class="avatar"
+        id="avatar-8"
+        alt="Avatar 8"
+        draggable="false"
+      />
+      <img
+        src="./static/avatar-7.png"
+        class="avatar"
+        id="avatar-7"
+        alt="Avatar 7"
+        draggable="false"
+      />
+      <img
+        src="./static/avatar-6.png"
+        class="avatar"
+        id="avatar-6"
+        alt="Avatar 6"
+        draggable="false"
+      />
+      <img
+        src="./static/avatar-5.png"
+        class="avatar"
+        id="avatar-5"
+        alt="Avatar 5"
+        draggable="false"
+      />
+      <img
+        src="./static/avatar-4.png"
+        class="avatar"
+        id="avatar-4"
+        alt="Avatar 4"
+        draggable="false"
+      />
+      <img
+        src="./static/avatar-3.png"
+        class="avatar"
+        id="avatar-3"
+        alt="Avatar 3"
+        draggable="false"
+      />
+      <img
+        src="./static/avatar-2.png"
+        class="avatar"
+        id="avatar-2"
+        alt="Avatar 2"
+        draggable="false"
+      />
+      <img
+        src="./static/avatar-1.png"
+        class="avatar"
+        id="avatar-1"
+        alt="Avatar 1"
+        draggable="false"
+      />
+
+      <!-- <h1>Hello, world!</h1> -->
+      <div class="container-fluid h-100">
+        <div class="row h-100">
+          <div class="col-12 col-md-8 h-100 p-3">
+            <div class="h-100 w-100 map-sec">
+              <!-- <div class="h-100 w-100 text-sec"></div> -->
+            </div>
+          </div>
+          <div class="col-12 col-md-4 h-100 p-3 form-sec">
+            <div class="container h-100 d-flex flex-column py-3">
+              <div class="row d-flex justify-content-between mb-3 mb-4">
+                <div class="col-12">
+                  <select
+                    id="game-round-select"
+                    class="form-select form-select-lg w-100"
+                    aria-label=".form-select-lg example"
+                  ></select>
+                </div>
+              </div>
+              <div class="row d-flex justify-content-between mb-3 mb-4">
+                <div class="col-12">
+                  <select
+                    id="insurance-round-select"
+                    class="form-select form-select-lg"
+                    aria-label=".form-select-lg example"
+                  ></select>
+                </div>
+              </div>
+              <div class="row d-flex justify-content-between mb-3 mb-4">
+                <div class="col-12">
+                  <select
+                    id="stock-round-select"
+                    class="form-select form-select-lg"
+                    aria-label=".form-select-lg example"
+                  ></select>
+                </div>
+              </div>
+              <div class="row d-flex justify-content-between mb-3 mb-4">
+                <div class="col-12">
+                  <select
+                    id="house-round-select"
+                    class="form-select form-select-lg"
+                    aria-label=".form-select-lg example"
+                  ></select>
+                </div>
+              </div>
+              <div class="row d-flex justify-content-between mb-4">
+                <div class="col-3">
+                  <button
+                    id="stock-button"
+                    type="button"
+                    class="btn btn-lg btn-warning w-100"
+                  >
+                    股票卡
+                  </button>
+                </div>
+                <div class="col-3">
+                  <button
+                    id="house-button"
+                    type="button"
+                    class="btn btn-lg btn-warning w-100 h-100"
+                  >
+                    房屋卡
+                  </button>
+                </div>
+                <div class="col-3">
+                  <button
+                    id="risk-button"
+                    type="button"
+                    class="btn btn-lg btn-danger w-100"
+                  >
+                    風險卡
+                  </button>
+                </div>
+                <div class="col-3">
+                  <button
+                    id="game-button"
+                    type="button"
+                    class="btn btn-lg btn-success w-100"
+                  >
+                    遊戲卡
+                  </button>
+                </div>
+              </div>
+              <div class="row d-flex justify-content-between flex-grow-1">
+                <div class="col-12 h-100">
+                  <div
+                    class="p-3 border border-light border-5 rounded position-relative h-100 bg-white"
+                  >
+                    <div id="card-loading">
+                      <div class="spinner-border text-dark" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                    </div>
+                    <div class="card-sec w-100 h-100"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-p34f1UUtsS3wqzfto5wAAmdvj+osOnFyQFpp4Ua3gs/ZVWx6oOypYoCJhGGScy+8"
+      crossorigin="anonymous"
+    ></script>
+    <script src="./js/teacher.js"></script>
+  </body>
+</html>
