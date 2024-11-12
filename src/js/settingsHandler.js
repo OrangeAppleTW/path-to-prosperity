@@ -144,7 +144,7 @@ export class SettingsHandler {
             <td class="col-1 align-middle">玩家 ${playerId}</td>
             <td class="col-1 align-middle">${player.password}</td>
             <td class="col-2 align-middle">
-              <input type="number" class="form-control cash-input" data-player-id="${playerId}" value="${cash}">
+              <input type="number" class="form-control cash-input" step="50" data-player-id="${playerId}" value="${cash}">
             </td>
             <td class="col-1 align-middle">${player.savings}</td>
             <td class="col-1 align-middle">${stocksNetWorth}</td>

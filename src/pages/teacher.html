@@ -319,39 +319,57 @@
         <div class="modal-body">
           <!-- 新增資產區域 -->
           <div class="row mb-3">
-            <div class="col-12">
+            <div class="col-6">
               <select id="admin-player-select" class="form-select">
                 <option value="">選擇玩家</option>
               </select>
             </div>
+            <div class="col-6">
+              <div class="input-group">
+                <span class="input-group-text justify-content-center bg-success border-success text-white">更改儲蓄</span>
+                <input id="admin-change-savings" type="number" class="form-control cash-input text-end" step="500"
+                  value="0">
+              </div>
+            </div>
           </div>
+
+
 
           <h6 class="text-dark d-flex justify-content-between align-content-end">
             <span>持有中的資產</span>
             <span style="font-size: 12px" class="align-self-end" id="change-message-card-modal"></span>
           </h6>
 
-          <div id="admin-assets-list"></div>
-
-          <div class="row">
-            <div class="input-group mb-3">
-              <select id="admin-stock-select" class="form-select me-3 rounded">
-                <option value="">選擇股票</option>
-              </select>
-              <button id="admin-add-stock-asset" class="btn btn-success rounded" disabled>
-                新增股票
-              </button>
-            </div>
+          <div class="col-12 mb-3 border p-2" style="
+                  overflow-y: auto;
+                  height: 50vh;
+                  scrollbar-width: thin;
+                  scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
+                ">
+            <div id="admin-assets-list"></div>
           </div>
 
-          <div class="row">
-            <div class="input-group">
-              <select id="admin-house-select" class="form-select me-3 rounded">
-                <option value="">選擇房屋</option>
-              </select>
-              <button id="admin-add-house-asset" class="btn btn-success rounded" disabled>
-                新增房屋
-              </button>
+
+          <div class="row mb-3">
+            <div class="col-6">
+              <div class="input-group">
+                <select id="admin-stock-select" class="form-select">
+                  <option value="">選擇股票</option>
+                </select>
+                <button id="admin-add-stock-asset" class="btn btn-success" disabled>
+                  新增股票
+                </button>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="input-group">
+                <select id="admin-house-select" class="form-select">
+                  <option value="">選擇房屋</option>
+                </select>
+                <button id="admin-add-house-asset" class="btn btn-success" disabled>
+                  新增房屋
+                </button>
+              </div>
             </div>
           </div>
 

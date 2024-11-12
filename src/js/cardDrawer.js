@@ -257,7 +257,7 @@ export class CardDrawer {
 
       await this.executePurchase(currentPlayerId, currentPrice);
 
-      alert('購買成功!');
+      alert('購買成功！');
       this.modal?.hide();
     } catch (error) {
       alert(`購買失敗: ${error.message}`);

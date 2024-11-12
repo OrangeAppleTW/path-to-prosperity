@@ -73,7 +73,44 @@ export class AdminAssetsManager {
     $('#admin-player-select').on('change', () => {
       this.renderAssetsList();
       this.validateSelections();
+      this.updateSavingsDisplay();
     });
+
+    $('#admin-change-savings').on('change', async (e) => {
+      const playerId = $('#admin-player-select').val();
+      if (!playerId) return;
+
+      const newSavings = parseInt($(e.target).val()) || 0;
+      try {
+        await this.updatePlayerSavings(playerId, newSavings);
+      } catch (error) {
+        console.error('更新儲蓄失敗:', error);
+        alert('更新儲蓄失敗，請稍後再試。');
+      }
+    });
+  }
+
+  async updatePlayerSavings(playerId, newSavings) {
+    const updates = {};
+    updates[`rooms/${this.roomId}/players/${playerId}/savings`] = newSavings;
+
+    try {
+      await update(ref(this.rtdb), updates);
+    } catch (error) {
+      console.error('更新儲蓄失敗:', error);
+      throw error;
+    }
+  }
+
+  updateSavingsDisplay() {
+    const playerId = $('#admin-player-select').val();
+    if (!playerId || !this.currentRoomData?.players?.[playerId]) {
+      $('#admin-change-savings').val(0);
+      return;
+    }
+
+    const savings = this.currentRoomData.players[playerId].savings || 0;
+    $('#admin-change-savings').val(savings);
   }
 
   formatDateTime(timestamp) {
@@ -349,6 +386,8 @@ export class AdminAssetsManager {
       } else if (roomData.gameState?.currentPlayer) {
         $playerSelect.val(roomData.gameState.currentPlayer);
       }
+
+      this.updateSavingsDisplay();
     }
 
     // 更新資產列表顯示
@@ -375,7 +414,7 @@ export class AdminAssetsManager {
     const playerData = this.currentRoomData.players[selectedPlayerId];
     console.log('Rendering assets for player:', selectedPlayerId, playerData);
     let html = `<div class="table-responsive">
-            <table class="table table-bordered">
+            <table class="table table-bordered m-0">
               <thead class="table-secondary">
                 <tr style="height: 48px" class="align-middle text-center">
                   <th class="align-middle col-1">類型</th>

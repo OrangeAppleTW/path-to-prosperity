@@ -23,6 +23,7 @@ export class SavingsHandler {
   }
 
   handleSavingsClick() {
+    $('#savingsInput').val(500);
     this.savingsModal.show();
   }
 
