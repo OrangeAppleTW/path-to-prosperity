@@ -105,7 +105,7 @@ module.exports = {
         },
         {
           from: 'CNAME',
-          to: path.resolve(__dirname, 'dist/CNAME'),
+          to: path.resolve(__dirname, 'dist'),
         },
       ],
     }),
