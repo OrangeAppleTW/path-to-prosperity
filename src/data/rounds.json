@@ -3,13 +3,13 @@
         {
             "id": "S1",
             "name": "船運業",
-            "price": 1000,
+            "price": 1100,
             "dividend": 100
         },
         {
             "id": "S2",
             "name": "能源企業",
-            "price": 1000,
+            "price": 1100,
             "dividend": 150
         },
         {
