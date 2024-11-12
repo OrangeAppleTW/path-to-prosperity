@@ -4,8 +4,8 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin'); // 引入 CopyWebpackPlugin
-
 const isProduction = process.env.NODE_ENV === 'production';
+const timestamp = new Date().getTime();
 
 module.exports = {
   entry: {
@@ -18,7 +18,7 @@ module.exports = {
     styles: './src/scss/custom.scss', // 新增自訂的 Sass 文件
   },
   output: {
-    filename: '[name].bundle.js',
+    filename: `[name].bundle.v${timestamp}.js`,
     path: path.resolve(__dirname, 'dist'),
     assetModuleFilename: 'assets/images/[name][ext][query]', // 修改此行
     clean: true, // 清理 /dist 資料夾
