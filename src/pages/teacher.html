@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" class="h-100">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="教師頁面｜財富之路" />
+  <title>教師頁面｜財富之路</title>
+  <!-- 引入 Bootstrap 的 CSS 和其他樣式已通過 common.js 引入 -->
+</head>
+
+<body class="d-flex h-100 text-white bg-dark">
+  <div id="content" class="h-100 w-100 p-3" style="display: none">
+    <img src="assets/images/avatar-8.png" class="avatar" id="avatar-8" alt="Avatar 8" draggable="false" />
+    <img src="assets/images/avatar-7.png" class="avatar" id="avatar-7" alt="Avatar 7" draggable="false" />
+    <img src="assets/images/avatar-6.png" class="avatar" id="avatar-6" alt="Avatar 6" draggable="false" />
+    <img src="assets/images/avatar-5.png" class="avatar" id="avatar-5" alt="Avatar 5" draggable="false" />
+    <img src="assets/images/avatar-4.png" class="avatar" id="avatar-4" alt="Avatar 4" draggable="false" />
+    <img src="assets/images/avatar-3.png" class="avatar" id="avatar-3" alt="Avatar 3" draggable="false" />
+    <img src="assets/images/avatar-2.png" class="avatar" id="avatar-2" alt="Avatar 2" draggable="false" />
+    <img src="assets/images/avatar-1.png" class="avatar" id="avatar-1" alt="Avatar 1" draggable="false" />
+
+    <!-- 主要內容區域 -->
+    <div class="container-fluid h-100">
+      <div class="row h-100">
+        <!-- 地圖區域 -->
+        <div class="col-12 col-md-8 h-100 p-3">
+          <div class="h-100 w-100 map-sec">
+            <!-- 地圖內容 -->
+          </div>
+        </div>
+        <!-- 表單區域 -->
+        <div class="col-12 col-md-4 h-100 p-3 form-sec">
+          <div class="container h-100 d-flex flex-column justify-content-center py-3">
+            <!-- 遊戲輪次選擇 -->
+
+            <div class="row d-flex flex-column justify-content-between">
+              <div class="row mb-4">
+                <div class="col-12">
+                  <select id="game-round-select" class="form-select form-select-lg w-100" aria-label="選擇遊戲輪次"></select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-3">
+                  <button id="count-rent-button" type="button" class="btn btn-lg btn-success w-100 h-100">
+                    房租
+                  </button>
+                </div>
+                <div class="col-3">
+                  <button id="count-dividend-button" type="button" class="btn btn-lg btn-success w-100 h-100">
+                    股息
+                  </button>
+                </div>
+                <div class="col-3">
+                  <button id="count-interest-button" type="button" class="btn btn-lg btn-success w-100 h-100">
+                    利息
+                  </button>
+                </div>
+                <div class="col-3">
+                  <button id="settings-button" type="button" class="btn btn-lg btn-success text-light w-100 h-100">
+                    結算
+                    <!-- <i class="bi bi-gear-fill"></i> -->
+                  </button>
+                </div>
+              </div>
+            </div>
+            <hr class="my-4" />
+            <div class="row d-flex flex-column justify-content-between">
+              <div class="row mb-4">
+                <div class="col-6">
+                  <select id="player-select" class="form-select form-select-lg" aria-label="選擇目前玩家"></select>
+                </div>
+                <div class="btn-group btn-group-lg col-6" role="group" aria-label="Basic radio toggle button group">
+                  <input type="radio" class="btn-check" name="btnradio" id="btnradio1" autocomplete="off" checked />
+                  <label id="btnradio1Label" class="btn btn-outline-danger text-light" for="btnradio1">風險</label>
+                  <input type="radio" class="btn-check" name="btnradio" id="btnradio2" autocomplete="off" />
+                  <label id="btnradio2Label" class="btn btn-outline-danger text-danger" for="btnradio2">資產</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-3">
+                  <button id="sell-assets-button" type="button" class="btn btn-danger btn-lg w-100 h-100 text-light">
+                    資產
+                  </button>
+                </div>
+                <div class="col-3">
+                  <button id="savings-button" type="button" class="btn btn-danger btn-lg w-100 h-100 text-light">
+                    儲蓄
+                  </button>
+                </div>
+                <div class="col-3">
+                  <button id="buy-insurance-button" type="button" class="btn btn-danger btn-lg w-100 h-100 text-light">
+                    保險
+                  </button>
+                </div>
+                <div class="col-3">
+                  <button id="roll-dice-button" type="button" class="btn btn-danger btn-lg w-100 h-100 text-light">
+                    擲骰
+                  </button>
+                </div>
+              </div>
+            </div>
+            <hr class="my-4" />
+            <div class="row d-flex flex-column justify-content-between">
+              <div class="row mb-4">
+                <p id="change-message-card" class="text-light m-0">
+                  股價 / 股息 / 房價
+                </p>
+              </div>
+              <div class="row mb-4">
+                <div class="col-6">
+                  <div class="input-group">
+                    <span
+                      class="input-group-text w-50 justify-content-center bg-success border-success text-white">股票階段</span>
+                    <select id="stock-round-select" class="form-select form-select-lg text-center"></select>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="input-group">
+                    <span
+                      class="input-group-text w-50 justify-content-center bg-success border-success text-white">房屋階段</span>
+                    <select id="house-round-select" class="form-select form-select-lg text-center"></select>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-3">
+                  <button id="stock-button" type="button" class="btn btn-lg btn-success w-100 h-100">
+                    股票
+                  </button>
+                </div>
+                <div class="col-3">
+                  <button id="house-button" type="button" class="btn btn-lg btn-success w-100 h-100">
+                    房屋
+                  </button>
+                </div>
+                <div class="col-3">
+                  <button id="risk-button" type="button" class="btn btn-lg btn-success w-100 h-100">
+                    風險
+                  </button>
+                </div>
+                <div class="col-3">
+                  <button id="game-button" type="button" class="btn btn-lg btn-success w-100 h-100">
+                    遊戲
+                  </button>
+                </div>
+              </div>
+            </div>
+            <hr class="my-4" />
+            <div class="row d-flex flex-column justify-content-between">
+              <div class="row">
+                <div class="col-12">
+                  <button id="admin-button" type="button" class="btn btn-lg btn-success w-100 h-100">
+                    銀行管理介面
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Sell Assets Modal -->
+    <div class="modal fade" id="assetsModal" tabindex="-1" aria-labelledby="assetsModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="text-dark modal-title" id="assetsModalLabel">
+              資產清單
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- 持有中資產表格 -->
+            <h6 class="text-dark d-flex justify-content-between align-content-end">
+              <span>持有中的資產</span>
+              <span style="font-size: 12px" class="align-self-end" id="change-message-card-modal"></span>
+            </h6>
+            <div id="held-properties-sec"></div>
+
+            <!-- 已賣出資產表格 -->
+            <h6 class="text-dark mt-4">已賣出的資產</h6>
+            <div id="sold-properties-sec"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              關閉
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- interest Modal -->
+    <div class="modal fade" id="savingsModal" tabindex="-1" aria-labelledby="savingsModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-dark">
+          <div class="modal-header">
+            <h5 class="modal-title" id="savingsModalLabel">儲蓄</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- 購買保險的內容 -->
+            <div class="d-flex row">
+              <p class="ms-1 mb-2" id="currentSavingsMessage"></p>
+              <p class="ms-1 mb-2">1. 每次儲蓄最少要存入 500 元。</p>
+              <p class="ms-1 mb-3">2. 要以 500 元為一個單位存入。</p>
+              <div class="input-group">
+                <span class="input-group-text">金額</span>
+                <input type="number" min="500" step="500" class="form-control text-end" id="savingsInput"
+                  placeholder="要存入的金額" value="500" />
+                <button type="button" class="btn btn-warning" id="confirm-savings">
+                  存入
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Buy Insurance Modal -->
+    <div class="modal fade" id="buyInsuranceModal" tabindex="-1" aria-labelledby="buyInsuranceModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-dark">
+          <div class="modal-header">
+            <h5 class="modal-title" id="buyInsuranceModalLabel">
+              購買保險
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <!-- 購買保險的內容 -->
+            <form>
+              <div class="mb-2">
+                <label for="insuranceQuantity" class="form-label">目前剩餘 10 張保險卡可以購買。</label>
+              </div>
+              <button type="button" class="btn btn-warning" id="confirm-buy-insurance">
+                購買一張
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Roll Dice Modal -->
+    <div class="modal fade" id="rollDiceModal" tabindex="-1" aria-labelledby="rollDiceModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-dark">
+          <div class="modal-header">
+            <h5 class="modal-title" id="rollDiceModalLabel">玩家擲骰</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+            <p class="position-absolute" id="last-dice-value"></p>
+            <div id="dice-result" class="mt-3"></div>
+          </div>
+          <div class="modal-footer d-flex ">
+            <div class="d-flex justify-content-between align-content-center w-100">
+              <div class="align-content-center">
+                <p class="m-0" id="dice-status">尚未發送骰子</p>
+              </div>
+              <div>
+                <button id="remove-dice-button" type="button" class="btn btn-danger text-light" style="display: none">
+                  收骰子
+                </button>
+                <button id="add-dice-button" type="button" class="btn btn-primary">
+                  發骰子
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                  關閉
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Roll Dice Modal -->
+    <div class="modal fade" id="rollDiceModal" tabindex="-1" aria-labelledby="rollDiceModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-dark">
+          <div class="modal-header">
+            <h5 class="modal-title" id="rollDiceModalLabel">玩家擲骰</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+            <p class="position-absolute" id="last-dice-value"></p>
+            <div id="dice-result" class="mt-3"></div>
+          </div>
+          <div class="modal-footer">
+            <button id="remove-dice-button" type="button" class="btn btn-danger text-light" style="display: none">
+              收骰子
+            </button>
+            <button id="add-dice-button" type="button" class="btn btn-primary">
+              發骰子
+            </button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              關閉
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Assets Modal -->
+  <div class="modal fade" id="adminAssetsModal" tabindex="-1" aria-labelledby="adminAssetsModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="text-dark modal-title" id="adminAssetsModalLabel">
+            資產管理介面
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- 新增資產區域 -->
+          <div class="row mb-3">
+            <div class="col-12">
+              <select id="admin-player-select" class="form-select">
+                <option value="">選擇玩家</option>
+              </select>
+            </div>
+          </div>
+
+          <h6 class="text-dark d-flex justify-content-between align-content-end">
+            <span>持有中的資產</span>
+            <span style="font-size: 12px" class="align-self-end" id="change-message-card-modal"></span>
+          </h6>
+
+          <div id="admin-assets-list"></div>
+
+          <div class="row">
+            <div class="input-group mb-3">
+              <select id="admin-stock-select" class="form-select me-3 rounded">
+                <option value="">選擇股票</option>
+              </select>
+              <button id="admin-add-stock-asset" class="btn btn-success rounded" disabled>
+                新增股票
+              </button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="input-group">
+              <select id="admin-house-select" class="form-select me-3 rounded">
+                <option value="">選擇房屋</option>
+              </select>
+              <button id="admin-add-house-asset" class="btn btn-success rounded" disabled>
+                新增房屋
+              </button>
+            </div>
+          </div>
+
+          <!-- 資產列表區域（動態生成的表格） -->
+        </div>
+        <div class="modal-footer justify-content-between">
+          <div>
+            <button id="admin-assets-modal-undo-button" type="button" class="btn btn-secondary">
+              復原
+            </button>
+            <button id="admin-assets-modal-redo-button" type="button" class="btn btn-secondary">
+              重做
+            </button>
+          </div>
+          <div>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              關閉
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interest Counter Modal -->
+  <div class="modal fade" id="interestCounterModal" tabindex="-1" aria-labelledby="interestCounterModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="text-dark modal-title" id="interestCounterModalLabel">
+            利息管理介面
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="interest-counter-list"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            關閉
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rent Counter Modal -->
+  <div class="modal fade" id="rentCounterModal" tabindex="-1" aria-labelledby="rentCounterModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="text-dark modal-title" id="rentCounterModalLabel">
+            房租管理介面
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- 新增資產區域 -->
+          <div class="row mb-3">
+            <div class="col-12">
+              <select id="rent-counter-player-select" class="form-select">
+                <option value="">選擇玩家</option>
+              </select>
+            </div>
+          </div>
+
+          <h6 class="text-dark d-flex justify-content-between align-content-end">
+            <span>持有中的房屋</span>
+            <span style="font-size: 12px" class="align-self-end" id="change-message-card-modal"></span>
+          </h6>
+
+          <div id="rent-counter-list"></div>
+          <p class="m-0" id="total-rent"></p>
+
+          <!-- 資產列表區域（動態生成的表格） -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            關閉
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dividend Counter Modal -->
+  <div class="modal fade" id="dividendCounterModal" tabindex="-1" aria-labelledby="dividendCounterModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="text-dark modal-title" id="dividendCounterModalLabel">
+            股息管理介面
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- 新增資產區域 -->
+          <div class="row mb-3">
+            <div class="col-12">
+              <select id="dividend-counter-player-select" class="form-select">
+                <option value="">選擇玩家</option>
+              </select>
+            </div>
+          </div>
+
+          <h6 class="text-dark d-flex justify-content-between align-content-end">
+            <span>持有中的股票</span>
+            <span style="font-size: 12px" class="align-self-end" id="change-message-card-modal"></span>
+          </h6>
+
+          <div id="dividend-counter-list"></div>
+          <p class="m-0" id="total-dividend"></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            關閉
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="text-dark modal-title" id="settingsModalLabel">
+            教室設定
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h6 class="text-dark">
+            教室狀態
+          </h6>
+          <div id="room-info-list"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            關閉
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <!-- 引入 Bootstrap 的 JavaScript 已通過 common.js 引入 -->
+</body>
+
+</html>

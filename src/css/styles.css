@@ -1,0 +1,115 @@
+/* src/css/styles.css */
+
+* {
+  font-family: 'Noto Sans Mono', monospace;
+  font-weight: 700 !important;
+}
+
+.bd-placeholder-img {
+  font-size: 1.125rem;
+  text-anchor: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.logo-sec {
+  background-image: url('../assets/images/logo.png');
+  background-size: 85%;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 50vh;
+}
+
+.logo-sec-small {
+  background-image: url('../assets/images/logo.png');
+  background-size: 55%;
+  background-position: center;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 50vh;
+}
+
+@media (min-width: 768px) {
+  .bd-placeholder-img-lg {
+    font-size: 3.5rem;
+  }
+}
+
+/* 設定整個頁面內容水平置中、內寬為 30 像素：*/
+body {
+    position: relative;
+    /* overflow: hidden; */
+    background-color: #333;
+}
+
+.map-sec {
+    background-image: url('../assets/images/map.svg');
+    background-size: contain;
+    /* 使背景圖片覆蓋整個容器 */
+    background-position: center;
+    /* 使背景圖片居中顯示 */
+    background-repeat: no-repeat;
+    /* 防止圖片重複 */
+}
+
+.avatar {
+    width: 2.5vw;
+    height: auto;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    cursor: default;
+    /* 初始為默認游標 */
+    z-index: 999;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px #ffffff solid;
+    padding: 2px;
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.5);
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1); */
+}
+
+.card-sec {
+    background-image: url('../assets/images/stock-1.png');
+    background-size: contain;
+    /* 使背景圖片覆蓋整個容器 */
+    background-position: center;
+    /* 使背景圖片居中顯示 */
+    background-repeat: no-repeat;
+    /* 防止圖片重複 */
+}
+
+#card-heading {
+    height: 50px;
+    background-color: red;
+}
+
+#card-body {
+    background-color: blue;
+}
+
+
+.card {
+    margin: 5px 0;
+}
+
+/* 設定文字的顏色為淡黑色 */
+p {
+    color: #555555;
+}
+
+#insurance-round-select {
+    color: red;
+}
+
+.vh-50 {
+    height: 50vh;
+}
+
+
+/* 基本字體大小 */
+.responsive-div p {
+  font-size: 1.5rem;
+}

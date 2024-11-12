@@ -1,0 +1,53 @@
+// src/scss/custom.scss
+
+// 1. 使用 @use 和 with 子句引入 Bootstrap 並覆蓋變量
+@use "~bootstrap/scss/bootstrap" with (
+  $warning: #f6c354,    // 自訂警告色
+  $danger: #ec706f,     // 自訂危險色
+  $success: #00807a     // 自訂成功色
+);
+
+.btn-warning {
+  background-color: bootstrap.$warning;
+  border-color: bootstrap.$warning;
+  &:hover {
+    background-color: darken(bootstrap.$warning, 10%);
+    border-color: darken(bootstrap.$warning, 12%);
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(bootstrap.$warning, 0.5);
+  }
+}
+
+.btn-danger {
+  background-color: bootstrap.$danger;
+  border-color: bootstrap.$danger;
+  &:hover {
+    background-color: darken(bootstrap.$danger, 10%);
+    border-color: darken(bootstrap.$danger, 12%);
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(bootstrap.$danger, 0.5);
+  }
+}
+
+.btn-success {
+  background-color: bootstrap.$success;
+  border-color: bootstrap.$success;
+  &:hover {
+    background-color: darken(bootstrap.$success, 10%);
+    border-color: darken(bootstrap.$success, 12%);
+  }
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(bootstrap.$success, 0.5);
+  }
+  // 禁用狀態的樣式
+  &:disabled,
+  &[disabled] {
+    // background-color: lighten(bootstrap.$success, 20%); // 淡化背景色
+    // border-color: lighten(bootstrap.$success, 20%);     // 淡化邊框色
+    // color: rgba(255, 255, 255, 0.65);                  // 文字顏色半透明
+    // cursor: not-allowed;                                // 改變滑鼠光標
+    opacity: 0.25;                                      // 設置透明度
+  }
+}
