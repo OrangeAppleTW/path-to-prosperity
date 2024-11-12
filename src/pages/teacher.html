@@ -108,18 +108,29 @@
                 </p>
               </div>
               <div class="row mb-4">
-                <div class="col-6">
+                <!-- <div class="col-6">
                   <div class="input-group">
                     <span
                       class="input-group-text w-50 justify-content-center bg-success border-success text-white">股票階段</span>
                     <select id="stock-round-select" class="form-select form-select-lg text-center"></select>
                   </div>
-                </div>
-                <div class="col-6">
+                </div> -->
+                <div class="col-12">
                   <div class="input-group">
-                    <span
-                      class="input-group-text w-50 justify-content-center bg-success border-success text-white">房屋階段</span>
-                    <select id="house-round-select" class="form-select form-select-lg text-center"></select>
+                    <span class="input-group-text justify-content-center bg-success border-success text-white fs-5"
+                      style="width: 50%;">股票階段</span>
+                    <select id="stock-round-select" class="form-select form-select-lg text-center"
+                      style="width: 50%;"></select>
+                  </div>
+                </div>
+              </div>
+              <div class="row mb-4">
+                <div class="col-12">
+                  <div class="input-group">
+                    <span class="input-group-text justify-content-center bg-success border-success text-white fs-5"
+                      style="width: 50%;">房屋階段</span>
+                    <select id="house-round-select" class="form-select form-select-lg text-center"
+                      style="width: 50%;"></select>
                   </div>
                 </div>
               </div>
@@ -326,9 +337,15 @@
             </div>
             <div class="col-6">
               <div class="input-group">
-                <span class="input-group-text justify-content-center bg-success border-success text-white">更改儲蓄</span>
-                <input id="admin-change-savings" type="number" class="form-control cash-input text-end" step="500"
-                  value="0">
+                <span class="input-group-text justify-content-center text-dark">目前儲蓄</span>
+                <input id="admin-savings" type="number" class="form-control cash-input text-end me-2 rounded-end"
+                  readonly value="0">
+                <button id="admin-increase-savings" class="btn btn-success rounded me-2">
+                  +500
+                </button>
+                <button id="admin-decrease-savings" class="btn btn-success rounded">
+                  -500
+                </button>
               </div>
             </div>
           </div>

@@ -76,25 +76,54 @@ export class AdminAssetsManager {
       this.updateSavingsDisplay();
     });
 
-    $('#admin-change-savings').on('change', async (e) => {
+    $('#admin-increase-savings').on('click', async () => {
       const playerId = $('#admin-player-select').val();
       if (!playerId) return;
 
-      const newSavings = parseInt($(e.target).val()) || 0;
+      const currentSavings = parseInt($('#admin-savings').val()) || 0;
       try {
-        await this.updatePlayerSavings(playerId, newSavings);
+        await this.updatePlayerSavings(playerId, currentSavings + 500);
       } catch (error) {
         console.error('更新儲蓄失敗:', error);
         alert('更新儲蓄失敗，請稍後再試。');
       }
     });
+
+    // 新增減少儲蓄按鈕事件
+    $('#admin-decrease-savings').on('click', async () => {
+      const playerId = $('#admin-player-select').val();
+      if (!playerId) return;
+
+      const currentSavings = parseInt($('#admin-savings').val()) || 0;
+      if (currentSavings >= 500) {
+        try {
+          await this.updatePlayerSavings(playerId, currentSavings - 500);
+        } catch (error) {
+          console.error('更新儲蓄失敗:', error);
+          alert('更新儲蓄失敗，請稍後再試。');
+        }
+      } else {
+        alert('儲蓄金額不足');
+      }
+    });
   }
 
   async updatePlayerSavings(playerId, newSavings) {
+    const oldSavings = this.currentRoomData?.players?.[playerId]?.savings || 0;
     const updates = {};
     updates[`rooms/${this.roomId}/players/${playerId}/savings`] = newSavings;
 
     try {
+      // 添加到歷史記錄
+      this.addToHistory({
+        type: 'savings',
+        data: {
+          playerId,
+          oldSavings,
+          newSavings,
+        },
+      });
+
       await update(ref(this.rtdb), updates);
     } catch (error) {
       console.error('更新儲蓄失敗:', error);
@@ -105,12 +134,12 @@ export class AdminAssetsManager {
   updateSavingsDisplay() {
     const playerId = $('#admin-player-select').val();
     if (!playerId || !this.currentRoomData?.players?.[playerId]) {
-      $('#admin-change-savings').val(0);
+      $('#admin-savings').val(0);
       return;
     }
 
     const savings = this.currentRoomData.players[playerId].savings || 0;
-    $('#admin-change-savings').val(savings);
+    $('#admin-savings').val(savings);
   }
 
   formatDateTime(timestamp) {
@@ -602,9 +631,40 @@ export class AdminAssetsManager {
         case 'use':
           await this.useAsset(action.data);
           break;
+        case 'savings':
+          await this.applySavingsChange(action.data);
+          break;
       }
     } catch (error) {
       console.error('應用操作失敗:', error);
+    }
+  }
+
+  async applySavingsChange(data) {
+    const { playerId, newSavings } = data;
+    const updates = {};
+    updates[`rooms/${this.roomId}/players/${playerId}/savings`] = newSavings;
+
+    try {
+      await update(ref(this.rtdb), updates);
+      this.updateSavingsDisplay();
+    } catch (error) {
+      console.error('應用儲蓄變更失敗:', error);
+      throw error;
+    }
+  }
+
+  async revertSavingsChange(data) {
+    const { playerId, oldSavings } = data;
+    const updates = {};
+    updates[`rooms/${this.roomId}/players/${playerId}/savings`] = oldSavings;
+
+    try {
+      await update(ref(this.rtdb), updates);
+      this.updateSavingsDisplay();
+    } catch (error) {
+      console.error('回復儲蓄變更失敗:', error);
+      throw error;
     }
   }
 
@@ -619,6 +679,9 @@ export class AdminAssetsManager {
           break;
         case 'use':
           await this.revertUseAsset(action.data);
+          break;
+        case 'savings':
+          await this.revertSavingsChange(action.data);
           break;
       }
     } catch (error) {
