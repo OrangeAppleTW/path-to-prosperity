@@ -103,6 +103,10 @@ module.exports = {
           from: path.resolve(__dirname, 'src/assets/sounds'),
           to: path.resolve(__dirname, 'dist/assets/sounds'),
         },
+        {
+          from: 'CNAME',
+          to: path.resolve(__dirname, 'dist/CNAME'),
+        },
       ],
     }),
     new HtmlWebpackPlugin({
