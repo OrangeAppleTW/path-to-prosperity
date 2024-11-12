@@ -286,6 +286,9 @@ $(document).ready(async function () {
 
       // 更新骰子按鈕狀態
       const $diceButton = $('#dice-button');
+      if (playerData.rollStatus === 'completed') {
+        alert(`記得要跟銀行索取 ${playerData.currentDiceValue * 100} 元！`);
+      }
       if (
         playerData.rollStatus === 'idle' ||
         playerData.rollStatus === 'completed'
