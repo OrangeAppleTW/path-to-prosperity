@@ -143,6 +143,9 @@ $(document).ready(async function () {
 
   function renderPropertiesTable(roomData) {
     if (!roomData.createdAt) return;
+    if (!Object.keys(roomData.players).includes(playerId)) {
+      window.location.href = `./student-lobby.html`;
+    }
     let playerData = roomData.players[playerId];
 
     const stocksMap = new Map(

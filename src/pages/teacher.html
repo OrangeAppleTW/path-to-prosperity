@@ -57,9 +57,8 @@
                   </button>
                 </div>
                 <div class="col-3">
-                  <button id="settings-button" type="button" class="btn btn-lg btn-success text-light w-100 h-100">
+                  <button id="settlement-button" type="button" class="btn btn-lg btn-success text-light w-100 h-100">
                     結算
-                    <!-- <i class="bi bi-gear-fill"></i> -->
                   </button>
                 </div>
               </div>
@@ -108,13 +107,6 @@
                 </p>
               </div>
               <div class="row mb-4">
-                <!-- <div class="col-6">
-                  <div class="input-group">
-                    <span
-                      class="input-group-text w-50 justify-content-center bg-success border-success text-white">股票階段</span>
-                    <select id="stock-round-select" class="form-select form-select-lg text-center"></select>
-                  </div>
-                </div> -->
                 <div class="col-12">
                   <div class="input-group">
                     <span class="input-group-text justify-content-center bg-success border-success text-white fs-5"
@@ -160,7 +152,12 @@
             <hr class="my-4" />
             <div class="row d-flex flex-column justify-content-between">
               <div class="row">
-                <div class="col-12">
+                <div class="col-3">
+                  <button id="settings-button" type="button" class="btn btn-lg btn-success h-100">
+                    設定
+                  </button>
+                </div>
+                <div class="col-9">
                   <button id="admin-button" type="button" class="btn btn-lg btn-success w-100 h-100">
                     銀行管理介面
                   </button>
@@ -316,6 +313,28 @@
     </div>
   </div>
 
+  <!-- Interest Counter Modal -->
+  <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="text-dark modal-title" id="settingsModalLabel">
+            設定介面
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="settings-section"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            關閉
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Admin Assets Modal -->
   <div class="modal fade" id="adminAssetsModal" tabindex="-1" aria-labelledby="adminAssetsModalLabel"
     aria-hidden="true">
@@ -323,7 +342,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="text-dark modal-title" id="adminAssetsModalLabel">
-            資產管理介面
+            銀行管理介面
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
@@ -513,19 +532,16 @@
   </div>
 
   <!-- Settings Modal -->
-  <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+  <div class="modal fade" id="settlementModal" tabindex="-1" aria-labelledby="settlementModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="text-dark modal-title" id="settingsModalLabel">
-            教室設定
+          <h5 class="text-dark modal-title" id="settlementModalLabel">
+            教室狀態
           </h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <h6 class="text-dark">
-            教室狀態
-          </h6>
           <div id="room-info-list"></div>
         </div>
         <div class="modal-footer">

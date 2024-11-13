@@ -4,9 +4,9 @@ import $ from 'jquery';
 import { ref, get, set, onValue, off } from 'firebase/database'; // 引入 Realtime Database 函數
 
 // 生成唯一的密碼碼
-function generateUniqueCodes() {
+function generateUniqueCodes(playNumLimit) {
   const codes = new Set();
-  while (codes.size < 8) {
+  while (codes.size < playNumLimit) {
     // 生成兩位隨機小寫字母
     const code = String.fromCharCode(
       65 + Math.floor(Math.random() * 26),
@@ -22,12 +22,19 @@ function generateUniqueCodes() {
 $(document).ready(function () {
   let currentListener = null; // 用於追蹤當前的監聽器函數
   let currentRoomCode = null; // 用於追蹤當前的 roomCode
+  const playNumLimit = 20;
+
+  const savedRoomCode = localStorage.getItem('lastRoomCode');
+  if (savedRoomCode) {
+    $('#room-input').val(savedRoomCode);
+  }
 
   // 當表單提交時觸發
   $('#room-form').submit(function (e) {
     e.preventDefault(); // 防止表單默認提交行為
 
     const roomCode = $('#room-input').val().trim();
+    localStorage.setItem('lastRoomCode', roomCode);
 
     if (roomCode === '') {
       displayMessage('請輸入教室代碼。');
@@ -83,8 +90,9 @@ $(document).ready(function () {
           };
 
           // 初始化 8 位玩家
-          const uniqueCodes = generateUniqueCodes();
-          for (let i = 1; i <= 8; i++) {
+
+          const uniqueCodes = generateUniqueCodes(playNumLimit);
+          for (let i = 1; i <= playNumLimit; i++) {
             newRoomData.players[i] = {
               password: roomCode + uniqueCodes[i - 1],
               joinedAt: 0,
@@ -168,7 +176,7 @@ $(document).ready(function () {
         <thead>
           <tr>
             <th>玩家</th>
-            <th>密碼</th>
+            <th>邀請代碼</th>
             <th>狀態</th>
           </tr>
         </thead>
@@ -206,5 +214,6 @@ $(document).ready(function () {
     `;
 
     $('#message-card').html(htmlContent);
+    $('#message-card').show();
   }
 });

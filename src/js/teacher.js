@@ -19,7 +19,8 @@ import { AdminAssetsManager } from './adminAssetsManager';
 import { RentCounter } from './rentCounter';
 import { DividendCounter } from './dividendCounter.js';
 import { InterestCounter } from './interestCounter.js';
-import { SettingsHandler } from './settingsHandler.js';
+import { SettlementHandler } from './settlementHandler.js';
+import { SettingsHandler } from './settingsHandler';
 import rounds from '../data/rounds.json';
 import Modal from 'bootstrap/js/dist/modal';
 
@@ -132,6 +133,7 @@ $(document).ready(function () {
   let currentRoomData = null;
   let insuranceHandler;
   let savingsHandler;
+  let settlementHandler;
   let settingsHandler;
   let cardDrawer;
   let selectors = {};
@@ -305,7 +307,7 @@ $(document).ready(function () {
 
         insuranceHandler.setCurrentRoomData(roomData);
         savingsHandler.setCurrentRoomData(roomData);
-        settingsHandler.setCurrentRoomData(roomData);
+        settlementHandler.setCurrentRoomData(roomData);
         adminAssetsManager.updateRoomData(roomData);
       },
       (error) => {
@@ -434,8 +436,9 @@ $(document).ready(function () {
     // 初始化卡片繪製器和保險處理器
     cardDrawer = new CardDrawer(baseURL, sounds, imageSets);
     insuranceHandler = new InsuranceHandler(rtdb, roomId);
+    settingsHandler = new SettingsHandler(rtdb, roomId);
     savingsHandler = new SavingsHandler(rtdb, roomId);
-    settingsHandler = new SettingsHandler(
+    settlementHandler = new SettlementHandler(
       rtdb,
       roomId,
       stocksData,

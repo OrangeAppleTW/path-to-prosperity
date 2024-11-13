@@ -29,7 +29,7 @@ export class PlayerSelector {
     $playerSelect.append(
       $('<option>', {
         value: '',
-        text: '-- 選擇玩家 --',
+        text: '請選擇玩家',
         disabled: true,
         selected: true,
       })

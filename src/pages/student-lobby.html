@@ -2,33 +2,31 @@
 
 <!DOCTYPE html>
 <html lang="zh-Hant" class="h-100">
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-    />
-    <meta name="description" content="" />
-    <title>學生大廳｜財富之路</title>
-    <!-- Webpack 將自動注入捆綁後的 CSS -->
-  </head>
-  <body class="d-flex h-100 text-white bg-dark">
-    <div class="container d-flex w-100 h-100 p-5 mx-auto flex-column">
-      <h1 class="mb-4">學生大廳</h1>
-      <form id="room-form">
-        <input
-          class="form-control mb-3"
-          id="room-input"
-          placeholder="加入代碼"
-          required
-        />
-        <button type="submit" class="btn btn-primary w-100">加入教室</button>
-      </form>
 
-      <br />
-      <div class="card p-3" id="message-card"></div>
-    </div>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="" />
+  <title>玩家大廳｜財富之路</title>
+  <!-- Webpack 將自動注入捆綁後的 CSS -->
+</head>
 
-    <!-- Webpack 將自動注入捆綁後的 JavaScript -->
-  </body>
+<body class="d-flex h-100 text-white bg-dark">
+  <div class="container d-flex w-100 h-100 p-5 mx-auto flex-column">
+    <h1 class="mb-4">玩家大廳</h1>
+    <form id="room-form">
+      <div class="input-group mb-3">
+        <span class="input-group-text">請輸入邀請代碼（不限大小寫）</span>
+        <input class="form-control" id="room-input" required />
+      </div>
+      <button type="submit" class="btn btn-primary w-100">開始遊玩</button>
+    </form>
+
+    <br />
+    <div class="card p-3 d-none" id="message-card"></div>
+  </div>
+
+  <!-- Webpack 將自動注入捆綁後的 JavaScript -->
+</body>
+
 </html>
