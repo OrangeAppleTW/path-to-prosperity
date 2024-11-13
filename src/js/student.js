@@ -269,7 +269,7 @@ $(document).ready(async function () {
             }`;
       // $('#next-round').text(nextGameRoundText);
       $('#price-change').text(
-        `階段變化：股價 ${
+        `房間 ${roomId} / 玩家 ${playerId} / 股價 ${
           currentStockRoundPriceChange > 0
             ? `+${currentStockRoundPriceChange}`
             : currentStockRoundPriceChange
@@ -288,9 +288,9 @@ $(document).ready(async function () {
       $('#total-house-assets').val(totalHouseAssets);
 
       $('#player-info').text(
-        `房間 ${roomId} / 玩家 ${playerId} / ${
-          currentGameRound.icon
-        } 第 ${currentGameRoundId} 回合：${currentGameRound.event}${
+        `${currentGameRound.icon} 第 ${currentGameRoundId} 回合：${
+          currentGameRound.event
+        }${
           nextGameRound.event == '無特殊事件' || nextGameRound.event == null
             ? ''
             : `（請注意下一回合要${nextGameRound.event}）`
