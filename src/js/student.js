@@ -46,13 +46,12 @@ $(document).ready(async function () {
   }
 
   function generatePropertyRow(property, key, stocksMap, housesMap) {
-    console.log(property);
     let assetBadge, assetDataName, currentPrice;
     let rawExpectedReturn, expectedReturn;
     let currentDividend, currentRent;
 
-    if (property.soldAt > 0) return;
-    if (property.usedAt > 0) return;
+    if (property.soldAt > 0) return '';
+    if (property.usedAt > 0) return '';
 
     if (property.type === 'stock' || property.type === 'house') {
       const assetId = property.property.split('-').pop();
@@ -289,40 +288,61 @@ $(document).ready(async function () {
 
       // 更新骰子按鈕狀態
       const $diceButton = $('#dice-button');
+      const $diceStatus = $('#dice-status');
 
-      if (playerData.rollStatus === 'connecting') {
-        $diceButton.prop('disabled', false).show();
-        $('#dice-status').css({
-          'background-image': 'url(/assets/images/dice_go.png)',
+      // 設定等待圖片的共用樣式
+      const setWaitingImage = () => {
+        $diceStatus.css({
+          'background-image': 'url(/assets/images/dice_wait.png)',
           'background-position': 'center bottom',
           'background-repeat': 'no-repeat',
           'background-size': 'cover',
         });
-      } else if (playerData.rollStatus === 'rolled') {
-        $diceButton.prop('disabled', true).hide();
-        $('#dice-status').css({
-          'background-image': '',
-        });
-      } else if (playerData.rollStatus === 'animationPlayed') {
-        $('#dice-status').css({
-          'background-image': '',
-        });
-        $diceButton.prop('disabled', true).hide();
+      };
 
-        diceModule
-          .playDiceAnimation(playerData.currentDiceValue, playerData.diceType)
-          .then(() => {
-            const updates = {};
-            updates[`rooms/${roomId}/players/${playerId}/rollStatus`] =
-              'completed';
-            update(ref(rtdb), updates).catch((error) => {
-              console.error('更新狀態失敗:', error);
-            });
+      switch (playerData.rollStatus) {
+        case 'connecting':
+          $diceButton.prop('disabled', false).show();
+          $diceStatus.css({
+            'background-image': 'url(/assets/images/dice_go.png)',
+            'background-position': 'center bottom',
+            'background-repeat': 'no-repeat',
+            'background-size': 'cover',
           });
-      } else {
-        $diceButton.prop('disabled', true).hide();
-        // $('#dice-status').text('等待發骰子');
-        $('#dice-container').show();
+          break;
+
+        case 'rolled':
+          $diceButton.prop('disabled', true).hide();
+          $diceStatus.css({
+            'background-image': '',
+          });
+          break;
+
+        case 'animationPlayed':
+          $diceStatus.css({
+            'background-image': '',
+          });
+          $diceButton.prop('disabled', true).hide();
+
+          diceModule
+            .playDiceAnimation(playerData.currentDiceValue, playerData.diceType)
+            .then(() => {
+              const updates = {};
+              updates[`rooms/${roomId}/players/${playerId}/rollStatus`] =
+                'completed';
+              update(ref(rtdb), updates).catch((error) => {
+                console.error('更新狀態失敗:', error);
+              });
+            });
+          break;
+
+        case 'completed':
+        case 'idle':
+        default:
+          $diceButton.prop('disabled', true).hide();
+          setWaitingImage();
+          $('#dice-container').show();
+          break;
       }
     }
   });
