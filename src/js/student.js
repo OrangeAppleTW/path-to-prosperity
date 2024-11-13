@@ -28,31 +28,36 @@ $(document).ready(async function () {
   let totalHouseAssets = 0;
 
   function showDiceAlert(diceValue) {
-    // 先移除舊的提示（如果存在）
-    $('.dice-alert').remove();
-
-    // 創建新的提示元素
     const alertDiv = $(`
-    <div class="dice-alert alert alert-danger" role="alert">
-      骰子點數：${diceValue}
-    </div>
-  `).css({
+        <div class="dice-alert alert alert-danger" role="alert">
+            有向前移動的話，記得跟銀行領取 ${diceValue * 100} 元！
+        </div>
+    `).css({
       position: 'fixed',
-      bottom: '20px',
-      right: '20px',
+      bottom: '50px',
+      left: '50px',
       'z-index': '1050',
       'min-width': '200px',
+      opacity: 0,
     });
 
-    // 將提示添加到body
-    $('body').append(alertDiv);
-
-    // 3秒後自動消失
+    // 等待1秒後開始顯示
     setTimeout(() => {
-      alertDiv.fadeOut('slow', function () {
-        $(this).remove();
+      $('body').append(alertDiv);
+
+      // 使用 requestAnimationFrame 確保動畫流暢
+      requestAnimationFrame(() => {
+        // 顯示動畫
+        alertDiv.animate({ opacity: 1 }, 500, function () {
+          // 顯示3秒後開始淡出
+          setTimeout(() => {
+            alertDiv.animate({ opacity: 0 }, 500, function () {
+              $(this).remove();
+            });
+          }, 3000);
+        });
       });
-    }, 3000);
+    }, 1000);
   }
 
   function generateTableHeader() {
@@ -351,6 +356,9 @@ $(document).ready(async function () {
             'background-image': '',
           });
           $diceButton.prop('disabled', true).hide();
+
+          // 顯示骰子點數提示
+          showDiceAlert(playerData.currentDiceValue);
 
           diceModule
             .playDiceAnimation(playerData.currentDiceValue, playerData.diceType)

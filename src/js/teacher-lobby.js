@@ -22,7 +22,7 @@ function generateUniqueCodes(playNumLimit) {
 $(document).ready(function () {
   let currentListener = null; // 用於追蹤當前的監聽器函數
   let currentRoomCode = null; // 用於追蹤當前的 roomCode
-  const playNumLimit = 20;
+  const playNumLimit = 8;
 
   const savedRoomCode = localStorage.getItem('lastRoomCode');
   if (savedRoomCode) {

@@ -51,11 +51,11 @@ export class InterestCounter {
         html += `
               <tr style="height: 48px">
                 <td class="align-middle text-center">玩家 ${playerId}</td>
-                <td class="align-middle text-end">${player.savings} 元</td>
-                <td class="align-middle text-end">10%</td>
-                <td class="align-middle text-end">${
+                <td class="align-middle text-center">${player.savings}</td>
+                <td class="align-middle text-center">10%</td>
+                <td class="align-middle text-center">${
                   player.savings * 0.1
-                } 元</td>
+                }</td>
               </tr>
             `;
       });

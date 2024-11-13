@@ -103,7 +103,7 @@ export class AssetsManager {
             <td class="align-middle text-center">-</td>
             <td class="align-middle text-center">-</td>
             <td class="align-middle text-center">-</td>
-            </tr>;
+        </tr>
         `;
       }
       if (soldProperties.length == 0) {
@@ -116,7 +116,7 @@ export class AssetsManager {
             <td class="align-middle text-center">-</td>
             <td class="align-middle text-center">-</td>
             <td class="align-middle text-center">-</td>
-            </tr>;
+        </tr>
         `;
       }
     } else {
@@ -129,7 +129,7 @@ export class AssetsManager {
             <td class="align-middle text-center">-</td>
             <td class="align-middle text-center">-</td>
             <td class="align-middle text-center">-</td>
-            </tr>;
+        </tr>
         `;
 
       soldTableHtml += `
@@ -141,7 +141,7 @@ export class AssetsManager {
             <td class="align-middle text-center">-</td>
             <td class="align-middle text-center">-</td>
             <td class="align-middle text-center">-</td>
-            </tr>;
+        </tr>
         `;
     }
 
@@ -237,23 +237,23 @@ export class AssetsManager {
       property.soldAt && property.soldAt > 0 ? 'success' : 'danger';
 
     return `
-    <tr>
-      <td class="align-middle text-center">${assetBadge}</td>
-      <td class="align-middle text-center">${assetData.name}</td>
-      <td class="align-middle text-center">${timeDisplay}</td>
-      <td class="align-middle text-end">${property.buyPrice} 元</td>
-      <td class="align-middle text-end">${sellPrice} 元</td>
-      <td class="align-middle text-end">${expectedReturn} 元</td>
-      <td class="text-center">
-        <button type="button" 
-                class="btn btn-${buttonStyle} btn-sm text-white ${buttonClass}-button" 
-                data-id="${key}" 
-                data-type="${property.type}">
-          ${buttonText}
-        </button>
-      </td>
-    </tr>
-  `;
+        <tr>
+        <td class="align-middle text-center">${assetBadge}</td>
+        <td class="align-middle text-center">${assetData.name}</td>
+        <td class="align-middle text-center">${timeDisplay}</td>
+        <td class="align-middle text-center">${property.buyPrice}</td>
+        <td class="align-middle text-center">${sellPrice}</td>
+        <td class="align-middle text-center">${expectedReturn}</td>
+        <td class="text-center">
+            <button type="button" 
+                    class="btn btn-${buttonStyle} btn-sm text-white ${buttonClass}-button" 
+                    data-id="${key}" 
+                    data-type="${property.type}">
+            ${buttonText}
+            </button>
+        </td>
+        </tr>
+    `;
   }
 
   _bindSellButton(playerData) {

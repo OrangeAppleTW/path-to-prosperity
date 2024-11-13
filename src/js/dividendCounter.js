@@ -138,9 +138,9 @@ export class DividendCounter {
               <tr style="height: 48px">
                 <td class="align-middle text-center">${stockData.name}</td>
                 <td class="align-middle text-center">${purchaseTime}</td>
-                <td class="align-middle text-end">${property.buyPrice} 元</td>
-                <td class="align-middle text-end">${currentPrice} 元</td>
-                <td class="align-middle text-end">${currentDividend} 元</td>
+                <td class="align-middle text-center">${property.buyPrice}</td>
+                <td class="align-middle text-center">${currentPrice}</td>
+                <td class="align-middle text-center">${currentDividend}</td>
               </tr>
             `;
           }

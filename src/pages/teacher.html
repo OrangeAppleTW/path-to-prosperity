@@ -214,7 +214,7 @@
               <p class="ms-1 mb-3">2. 要以 500 元為一個單位存入。</p>
               <div class="input-group">
                 <span class="input-group-text">金額</span>
-                <input type="number" min="500" step="500" class="form-control text-end" id="savingsInput"
+                <input type="number" min="500" step="500" class="form-control text-center" id="savingsInput"
                   placeholder="要存入的金額" value="500" />
                 <button type="button" class="btn btn-warning" id="confirm-savings">
                   存入
@@ -338,7 +338,7 @@
   <!-- Admin Assets Modal -->
   <div class="modal fade" id="adminAssetsModal" tabindex="-1" aria-labelledby="adminAssetsModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="text-dark modal-title" id="adminAssetsModalLabel">
@@ -357,18 +357,47 @@
             <div class="col-6">
               <div class="input-group">
                 <span class="input-group-text justify-content-center text-dark">目前儲蓄</span>
-                <input id="admin-savings" type="number" class="form-control cash-input text-end me-2 rounded-end"
-                  readonly value="0">
-                <button id="admin-increase-savings" class="btn btn-success rounded me-2">
+                <input id="admin-savings" type="number" class="form-control cash-input text-center" readonly value="0">
+                <button id="admin-increase-savings" class="btn btn-success col-2">
                   +500
                 </button>
-                <button id="admin-decrease-savings" class="btn btn-success rounded">
+                <button id="admin-decrease-savings" class="btn btn-danger text-light col-2">
                   -500
                 </button>
               </div>
             </div>
           </div>
 
+          <div class="row mb-3">
+            <div class="col-6">
+              <div class="input-group w-100">
+                <span class="input-group-text justify-content-center text-dark">選擇股票</span>
+                <select id="admin-stock-select" class="form-select text-center">
+                  <option value="">----- 股票 -----</option>
+                </select>
+                <button id="admin-add-stock-asset" class="btn btn-success col-2" disabled>
+                  購買
+                </button>
+                <button id="admin-add-stock-asset-for-free" class="btn btn-danger text-light col-2" disabled>
+                  贈送
+                </button>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="input-group w-100">
+                <span class="input-group-text justify-content-center text-dark">選擇房屋</span>
+                <select id="admin-house-select" class="form-select text-center">
+                  <option value="">----- 房屋 -----</option>
+                </select>
+                <button id="admin-add-house-asset" class="btn btn-success col-2" disabled>
+                  購買
+                </button>
+                <button id="admin-add-house-asset-for-free" class="btn btn-danger text-light col-2" disabled>
+                  贈送
+                </button>
+              </div>
+            </div>
+          </div>
 
 
           <h6 class="text-dark d-flex justify-content-between align-content-end">
@@ -376,38 +405,15 @@
             <span style="font-size: 12px" class="align-self-end" id="change-message-card-modal"></span>
           </h6>
 
-          <div class="col-12 mb-3 border p-2" style="
+          <div class="col-12 mb-3 border border-1 p-3" style="
                   overflow-y: auto;
-                  height: 50vh;
+                  height: 40vh;
                   scrollbar-width: thin;
                   scrollbar-color: rgba(0, 0, 0, 0.1) transparent;
                 ">
             <div id="admin-assets-list"></div>
           </div>
 
-
-          <div class="row mb-3">
-            <div class="col-6">
-              <div class="input-group">
-                <select id="admin-stock-select" class="form-select">
-                  <option value="">選擇股票</option>
-                </select>
-                <button id="admin-add-stock-asset" class="btn btn-success" disabled>
-                  新增股票
-                </button>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="input-group">
-                <select id="admin-house-select" class="form-select">
-                  <option value="">選擇房屋</option>
-                </select>
-                <button id="admin-add-house-asset" class="btn btn-success" disabled>
-                  新增房屋
-                </button>
-              </div>
-            </div>
-          </div>
 
           <!-- 資產列表區域（動態生成的表格） -->
         </div>

@@ -51,14 +51,111 @@ export class AdminAssetsManager {
     });
   }
 
+  async handleAddAssetForFree(type) {
+    const playerId = $('#admin-player-select').val();
+    let propertyId;
+
+    if (type === 'house') {
+      propertyId = $('#admin-house-select').val();
+    } else if (type === 'stock') {
+      propertyId = $('#admin-stock-select').val();
+    }
+
+    if (!playerId || !propertyId) return;
+
+    const asset = {
+      buyAt: Date.now(),
+      buyPrice: 0, // 贈送的資產價格為 0
+      property: propertyId,
+      type: type,
+    };
+
+    try {
+      const playerProperties =
+        this.currentRoomData?.players?.[playerId]?.properties || {};
+      const newPropertyId = this.getNextPropertyId(playerProperties);
+
+      // 更新本地數據
+      if (!this.currentRoomData.players[playerId].properties) {
+        this.currentRoomData.players[playerId].properties = {};
+      }
+      this.currentRoomData.players[playerId].properties[newPropertyId] = asset;
+
+      // 更新數據庫
+      await this.addAsset({
+        playerId,
+        propertyId: newPropertyId,
+        asset,
+      });
+
+      // 添加到歷史記錄
+      this.addToHistory({
+        type: 'add',
+        data: {
+          playerId,
+          propertyId: newPropertyId,
+          asset,
+        },
+      });
+
+      // 更新玩家選擇器的值並重新渲染資產列表
+      this.renderAssetsList();
+
+      // 重置選擇器
+      $('#admin-stock-select').val('');
+      $('#admin-house-select').val('');
+
+      this.validateAllAssetButtons();
+      alert('已新增到持有中的資產中');
+      console.log(`Added free asset with propertyId: ${newPropertyId}`);
+    } catch (error) {
+      console.error('新增免費資產失敗:', error);
+      alert('新增免費資產失敗，請稍後再試。');
+    }
+  }
+
+  validateAllAssetButtons() {
+    const playerSelected = $('#admin-player-select').val();
+    const houseSelected = $('#admin-house-select').val();
+    const stockSelected = $('#admin-stock-select').val();
+
+    // 驗證一般資產按鈕
+    $('#admin-add-house-asset').prop(
+      'disabled',
+      !houseSelected || !playerSelected
+    );
+    $('#admin-add-stock-asset').prop(
+      'disabled',
+      !stockSelected || !playerSelected
+    );
+
+    // 驗證免費資產按鈕
+    $('#admin-add-house-asset-for-free').prop(
+      'disabled',
+      !houseSelected || !playerSelected
+    );
+    $('#admin-add-stock-asset-for-free').prop(
+      'disabled',
+      !stockSelected || !playerSelected
+    );
+
+    // 驗證儲蓄相關按鈕
+    const currentSavings = parseInt($('#admin-savings').val()) || 0;
+    $('#admin-decrease-savings').prop(
+      'disabled',
+      currentSavings < 500 || !playerSelected
+    );
+    $('#admin-increase-savings').prop('disabled', !playerSelected);
+  }
+
   bindEvents() {
     // 監聽選擇器變化
-    $('#admin-house-select, #admin-stock-select, #admin-player-select').on(
-      'change',
-      () => {
-        this.validateSelections();
-      }
-    );
+
+    $(
+      '#admin-house-select, #admin-stock-select, #admin-player-select, #admin-savings'
+    ).on('change', () => {
+      this.validateAllAssetButtons();
+    });
 
     // 新增資產按鈕
     $('#admin-add-house-asset').click(() => this.handleAddAsset('house'));
@@ -72,7 +169,7 @@ export class AdminAssetsManager {
 
     $('#admin-player-select').on('change', () => {
       this.renderAssetsList();
-      this.validateSelections();
+      this.validateAllAssetButtons();
       this.updateSavingsDisplay();
     });
 
@@ -106,6 +203,13 @@ export class AdminAssetsManager {
         alert('儲蓄金額不足');
       }
     });
+
+    $('#admin-add-house-asset-for-free').click(() =>
+      this.handleAddAssetForFree('house')
+    );
+    $('#admin-add-stock-asset-for-free').click(() =>
+      this.handleAddAssetForFree('stock')
+    );
   }
 
   async updatePlayerSavings(playerId, newSavings) {
@@ -140,6 +244,7 @@ export class AdminAssetsManager {
 
     const savings = this.currentRoomData.players[playerId].savings || 0;
     $('#admin-savings').val(savings);
+    this.validateAllAssetButtons();
   }
 
   formatDateTime(timestamp) {
@@ -230,114 +335,19 @@ export class AdminAssetsManager {
       });
 
       // 更新玩家選擇器的值並重新渲染資產列表
-      //   $('#admin-player-select').val(playerId);
       this.renderAssetsList();
 
-      // 重置相關選擇器
-      if (type === 'house') {
-        $('#admin-house-select').val('');
-        $('#admin-add-house-asset').prop('disabled', true);
-      } else if (type === 'stock') {
-        $('#admin-stock-select').val('');
-        $('#admin-add-stock-asset').prop('disabled', true);
-      }
+      // 重置選擇器
+      $('#admin-stock-select').val('');
+      $('#admin-house-select').val('');
 
+      this.validateAllAssetButtons();
+      alert('已新增到持有中的資產中');
       console.log(`Added asset with propertyId: ${newPropertyId}`);
     } catch (error) {
       console.error('新增資產失敗:', error);
       alert('新增資產失敗，請稍後再試。');
     }
-  }
-
-  validateSelections() {
-    const houseSelected = $('#admin-house-select').val();
-    const stockSelected = $('#admin-stock-select').val();
-    const playerSelected = $('#admin-player-select').val();
-
-    $('#admin-add-house-asset').prop(
-      'disabled',
-      !houseSelected || !playerSelected
-    );
-    $('#admin-add-stock-asset').prop(
-      'disabled',
-      !stockSelected || !playerSelected
-    );
-  }
-
-  bindAssetButtons() {
-    // 先移除所有已存在的事件監聽器
-    $('#admin-assets-list').off('click', '.remove-asset');
-    $('#admin-assets-list').off('click', '.use-asset');
-
-    // 重新綁定移除資產按鈕事件
-    $('#admin-assets-list').on('click', '.remove-asset', async (e) => {
-      const playerId = $(e.currentTarget).data('player-id');
-      const propertyId = $(e.currentTarget).data('property-id');
-
-      if (confirm('確定要移除此資產嗎？')) {
-        try {
-          // 獲取當前資產資料
-          const property =
-            this.currentRoomData.players[playerId].properties[propertyId];
-
-          // 記錄操作到歷史
-          this.addToHistory({
-            type: 'remove',
-            data: {
-              playerId,
-              propertyId,
-              asset: { ...property }, // 保存完整的資產資料
-            },
-          });
-
-          // 使用統一的移除方法
-          await this.removeAsset({
-            playerId,
-            propertyId,
-          });
-
-          alert('資產已移除');
-        } catch (error) {
-          console.error('移除資產失敗:', error);
-          alert('移除資產失敗，請稍後再試。');
-        }
-      }
-    });
-
-    // 重新綁定使用資產按鈕事件
-    $('#admin-assets-list').on('click', '.use-asset', async (e) => {
-      const playerId = $(e.currentTarget).data('player-id');
-      const propertyId = $(e.currentTarget).data('property-id');
-
-      if (confirm('確定要使用此資產嗎？')) {
-        try {
-          // 獲取當前資產資料
-          const property =
-            this.currentRoomData.players[playerId].properties[propertyId];
-
-          // 記錄操作到歷史
-          this.addToHistory({
-            type: 'use',
-            data: {
-              playerId,
-              propertyId,
-              asset: { ...property }, // 保存完整的資產資料
-            },
-          });
-
-          // 使用統一的使用方法
-          await this.useAsset({
-            playerId,
-            propertyId,
-          });
-
-          alert('資產使用成功！');
-        } catch (error) {
-          console.error('使用資產失敗:', error);
-          alert('使用資產失敗，請稍後再試。');
-        }
-      }
-    });
   }
 
   listenForRoomData() {
@@ -421,6 +431,8 @@ export class AdminAssetsManager {
 
     // 更新資產列表顯示
     this.renderAssetsList();
+    this.updateSavingsDisplay();
+    this.validateAllAssetButtons();
   }
 
   renderAssetsList(specificPlayerId = null) {
@@ -442,7 +454,8 @@ export class AdminAssetsManager {
 
     const playerData = this.currentRoomData.players[selectedPlayerId];
     console.log('Rendering assets for player:', selectedPlayerId, playerData);
-    let html = `<div class="table-responsive">
+    let html = `
+        <div class="table-responsive">
             <table class="table table-bordered m-0">
               <thead class="table-secondary">
                 <tr style="height: 48px" class="align-middle text-center">
@@ -454,7 +467,9 @@ export class AdminAssetsManager {
                   <th class="align-middle">預期報酬</th>
                   <th class="align-middle">操作</th>
                 </tr>
-              </thead><tbody>`;
+              </thead>
+              <tbody>
+    `;
 
     // 計算價格變動量
     const stockPriceChange = this.calculateStockPriceChange();
@@ -524,11 +539,17 @@ export class AdminAssetsManager {
                 assetData ? assetData.name : '未知資產'
               }</td>
               <td class="align-middle text-center">${purchaseTime}</td>
-              <td class="align-middle text-end">${property.buyPrice}</td>
-              <td class="align-middle text-end">${currentPrice}</td>
-              <td class="align-middle text-end">${
-                assetType.indexOf('保險') === -1 ? expectedReturnDisplay : ''
-              }</td>
+              <td class="align-middle text-center">${property.buyPrice}</td>
+              ${
+                assetType.indexOf('保險') === -1
+                  ? `<td class="align-middle text-center">${currentPrice}</td>`
+                  : '<td class="align-middle text-center">-</td>'
+              }
+              ${
+                assetType.indexOf('保險') === -1
+                  ? `<td class="align-middle text-center">${expectedReturnDisplay}</td>`
+                  : '<td class="align-middle text-center">-</td>'
+              }
               <td class="align-middle text-center">
                 ${
                   assetType.indexOf('保險') != -1
@@ -554,7 +575,7 @@ export class AdminAssetsManager {
           </div>
         `;
       } else {
-        html += '<p>沒有可顯示的資產。</p>';
+        html += '';
       }
     }
 
@@ -562,6 +583,82 @@ export class AdminAssetsManager {
 
     // 綁定按鈕事件
     this.bindAssetButtons();
+  }
+
+  bindAssetButtons() {
+    // 先移除所有已存在的事件監聽器
+    $('#admin-assets-list').off('click', '.remove-asset');
+    $('#admin-assets-list').off('click', '.use-asset');
+
+    // 重新綁定移除資產按鈕事件
+    $('#admin-assets-list').on('click', '.remove-asset', async (e) => {
+      const playerId = $(e.currentTarget).data('player-id');
+      const propertyId = $(e.currentTarget).data('property-id');
+
+      if (confirm('確定要移除此資產嗎？')) {
+        try {
+          // 獲取當前資產資料
+          const property =
+            this.currentRoomData.players[playerId].properties[propertyId];
+
+          // 記錄操作到歷史
+          this.addToHistory({
+            type: 'remove',
+            data: {
+              playerId,
+              propertyId,
+              asset: { ...property }, // 保存完整的資產資料
+            },
+          });
+
+          // 使用統一的移除方法
+          await this.removeAsset({
+            playerId,
+            propertyId,
+          });
+
+          alert('資產已移除');
+        } catch (error) {
+          console.error('移除資產失敗:', error);
+          alert('移除資產失敗，請稍後再試。');
+        }
+      }
+    });
+
+    // 重新綁定使用資產按鈕事件
+    $('#admin-assets-list').on('click', '.use-asset', async (e) => {
+      const playerId = $(e.currentTarget).data('player-id');
+      const propertyId = $(e.currentTarget).data('property-id');
+
+      if (confirm('確定要使用此資產嗎？')) {
+        try {
+          // 獲取當前資產資料
+          const property =
+            this.currentRoomData.players[playerId].properties[propertyId];
+
+          // 記錄操作到歷史
+          this.addToHistory({
+            type: 'use',
+            data: {
+              playerId,
+              propertyId,
+              asset: { ...property }, // 保存完整的資產資料
+            },
+          });
+
+          // 使用統一的使用方法
+          await this.useAsset({
+            playerId,
+            propertyId,
+          });
+
+          alert('資產使用成功！');
+        } catch (error) {
+          console.error('使用資產失敗:', error);
+          alert('使用資產失敗，請稍後再試。');
+        }
+      }
+    });
   }
 
   addToHistory(action) {
@@ -751,7 +848,7 @@ export class AdminAssetsManager {
 
     try {
       await update(ref(this.rtdb), updates);
-      this.renderAssetsList();
+      this.renderAssetsList(playerId);
     } catch (error) {
       console.error('回復使用資產失敗:', error);
       throw error;

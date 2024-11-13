@@ -246,10 +246,8 @@ export class DiceModule {
     // 播放音效
     try {
       await this.diceSound.play();
-
-      // 音效播放完後立即更新 animationFinishedRemind
     } catch (e) {
-      console.log('播放音效或更新狀態失敗:', e);
+      console.log('播放音效失敗:', e);
     }
 
     const cube = this.container.querySelector('.dice1');
@@ -260,19 +258,6 @@ export class DiceModule {
 
     return new Promise((resolve) => {
       const cube = this.container.querySelector('.dice1');
-
-      // 監聽動畫結束事件
-      const handleAnimationEnd = () => {
-        const updates = {};
-        updates[
-          `rooms/${this.roomId}/players/${this.playerId}/animationFinishedRemind`
-        ] = true;
-        update(ref(this.rtdb), updates);
-
-        cube.removeEventListener('transitionend', handleAnimationEnd);
-      };
-
-      cube.addEventListener('transitionend', handleAnimationEnd);
 
       // 初始動畫
       cube.style.transition = `transform ${this.ANIMATION_DURATION}ms cubic-bezier(0.17, 0.67, 0.83, 0.67)`;
