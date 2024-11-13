@@ -113,3 +113,20 @@ p {
 .responsive-div p {
   font-size: 1.5rem;
 }
+
+
+.dice-alert {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

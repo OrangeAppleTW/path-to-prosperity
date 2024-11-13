@@ -27,6 +27,34 @@ $(document).ready(async function () {
   let totalStockAssets = 0;
   let totalHouseAssets = 0;
 
+  function showDiceAlert(diceValue) {
+    // 先移除舊的提示（如果存在）
+    $('.dice-alert').remove();
+
+    // 創建新的提示元素
+    const alertDiv = $(`
+    <div class="dice-alert alert alert-danger" role="alert">
+      骰子點數：${diceValue}
+    </div>
+  `).css({
+      position: 'fixed',
+      bottom: '20px',
+      right: '20px',
+      'z-index': '1050',
+      'min-width': '200px',
+    });
+
+    // 將提示添加到body
+    $('body').append(alertDiv);
+
+    // 3秒後自動消失
+    setTimeout(() => {
+      alertDiv.fadeOut('slow', function () {
+        $(this).remove();
+      });
+    }, 3000);
+  }
+
   function generateTableHeader() {
     return `
       <table class="table m-0 table-bordered">

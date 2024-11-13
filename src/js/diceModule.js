@@ -246,8 +246,10 @@ export class DiceModule {
     // 播放音效
     try {
       await this.diceSound.play();
+
+      // 音效播放完後立即更新 animationFinishedRemind
     } catch (e) {
-      console.log('播放音效失败:', e);
+      console.log('播放音效或更新狀態失敗:', e);
     }
 
     const cube = this.container.querySelector('.dice1');
@@ -257,7 +259,22 @@ export class DiceModule {
     }
 
     return new Promise((resolve) => {
-      // 初始动画
+      const cube = this.container.querySelector('.dice1');
+
+      // 監聽動畫結束事件
+      const handleAnimationEnd = () => {
+        const updates = {};
+        updates[
+          `rooms/${this.roomId}/players/${this.playerId}/animationFinishedRemind`
+        ] = true;
+        update(ref(this.rtdb), updates);
+
+        cube.removeEventListener('transitionend', handleAnimationEnd);
+      };
+
+      cube.addEventListener('transitionend', handleAnimationEnd);
+
+      // 初始動畫
       cube.style.transition = `transform ${this.ANIMATION_DURATION}ms cubic-bezier(0.17, 0.67, 0.83, 0.67)`;
       cube.style.transform = `
         rotateX(${Math.random() * 1080}deg) 
@@ -265,14 +282,14 @@ export class DiceModule {
         rotateZ(${Math.random() * 1080}deg)
       `;
 
-      // 最终动画
+      // 最終動畫
       setTimeout(() => {
         cube.style.transition = 'transform 500ms ease-out';
         cube.style.transform = this.getDiceTransform(diceValue);
 
-        // 显示结果
+        // 顯示結果
         setTimeout(() => {
-          // 动画结束后清理
+          // 動畫結束後清理
           setTimeout(() => {
             if (this.playerId !== 'teacher') {
               this.$diceContainer.style.display = 'none';

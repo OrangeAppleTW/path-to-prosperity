@@ -98,6 +98,7 @@ $(document).ready(function () {
               joinedAt: 0,
               diceType: 1,
               rollStatus: 'idle', // 狀態枚舉：idle, connecting, rolled, animationPlayed
+              animationFinishedRemind: false,
               currentDiceValue: 0,
               lastDiceValue: 0,
               savings: 0,
