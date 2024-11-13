@@ -289,25 +289,8 @@ $(document).ready(async function () {
 
       // 更新骰子按鈕狀態
       const $diceButton = $('#dice-button');
-      if (playerData.rollStatus === 'completed') {
-        alert(
-          `如果有往前移動的話，記得要跟銀行索取 ${
-            playerData.currentDiceValue * 100
-          } 元！`
-        );
-      }
-      if (
-        playerData.rollStatus === 'idle' ||
-        playerData.rollStatus === 'completed'
-      ) {
-        $diceButton.prop('disabled', true).hide();
-        $('#dice-status').css({
-          'background-image': 'url(/assets/images/dice_wait.png)',
-          'background-position': 'center bottom',
-          'background-repeat': 'no-repeat',
-          'background-size': 'cover',
-        });
-      } else if (playerData.rollStatus === 'connecting') {
+
+      if (playerData.rollStatus === 'connecting') {
         $diceButton.prop('disabled', false).show();
         $('#dice-status').css({
           'background-image': 'url(/assets/images/dice_go.png)',
@@ -338,7 +321,7 @@ $(document).ready(async function () {
           });
       } else {
         $diceButton.prop('disabled', true).hide();
-        $('#dice-status').text('等待發骰子');
+        // $('#dice-status').text('等待發骰子');
         $('#dice-container').show();
       }
     }
