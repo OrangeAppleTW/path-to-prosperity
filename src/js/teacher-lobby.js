@@ -37,12 +37,12 @@ $(document).ready(function () {
     localStorage.setItem('lastRoomCode', roomCode);
 
     if (roomCode === '') {
-      displayMessage('請輸入教室代碼。');
+      displayMessage('請輸入房間代碼。');
       return;
     }
 
     if (roomCode != '1234') {
-      alert('暫不開放其他教室');
+      alert('暫不開放其他房間');
       return;
     }
 
@@ -67,14 +67,14 @@ $(document).ready(function () {
     get(roomRef)
       .then((snapshot) => {
         if (snapshot.exists()) {
-          // 教室已存在，讀取資料
+          // 房間已存在，讀取資料
           const roomData = snapshot.val();
-          console.log('教室資料:', roomData);
-          displayMessage('教室已存在，正在讀取資料...');
+          console.log('房間資料:', roomData);
+          displayMessage('房間已存在，正在讀取資料...');
           // 設置實時監聽器以監控 players 資料變更
           listenToPlayers(roomCode, database);
         } else {
-          // 教室不存在，創建新教室
+          // 房間不存在，創建新房間
           const newRoomData = {
             createdAt: Math.floor(Date.now() / 1000),
             gameState: {
@@ -108,14 +108,14 @@ $(document).ready(function () {
 
           set(roomRef, newRoomData)
             .then(() => {
-              console.log('新教室已創建:', newRoomData);
-              displayMessage('教室不存在，已創建新教室。');
+              console.log('新房間已創建:', newRoomData);
+              displayMessage('房間不存在，已創建新房間。');
               // 設置實時監聽器以監控 players 資料變更
               listenToPlayers(roomCode, database);
             })
             .catch((error) => {
-              console.error('創建教室時出錯:', error);
-              displayMessage('創建教室時出錯，請稍後再試。');
+              console.error('創建房間時出錯:', error);
+              displayMessage('創建房間時出錯，請稍後再試。');
             })
             .finally(() => {
               submitButton.prop('disabled', false); // 重新啟用提交按鈕
@@ -123,8 +123,8 @@ $(document).ready(function () {
         }
       })
       .catch((error) => {
-        console.error('讀取教室資料時出錯:', error);
-        displayMessage('讀取教室資料時出錯，請稍後再試。');
+        console.error('讀取房間資料時出錯:', error);
+        displayMessage('讀取房間資料時出錯，請稍後再試。');
         submitButton.prop('disabled', false); // 重新啟用提交按鈕
       });
   });
@@ -155,7 +155,7 @@ $(document).ready(function () {
     // 設置監聽器
     onValue(playersRef, listener, errorCallback);
 
-    // 更新當前監聽的教室代碼和監聽器
+    // 更新當前監聽的房間代碼和監聽器
     currentListener = listener;
     currentRoomCode = roomCode;
 
@@ -209,7 +209,7 @@ $(document).ready(function () {
         </tbody>
       </table>
       <a class="w-100" href="./teacher.html?room=${currentRoomCode}">
-        <button type="button" class="w-100 btn btn-primary">前往教室</button>
+        <button type="button" class="w-100 btn btn-primary">前往房間</button>
       </a>
     `;
 
