@@ -15,7 +15,10 @@
   <div class="container d-flex w-100 h-100 p-5 mx-auto flex-column">
     <h1 class="mb-4">開啟房間</h1>
     <form id="room-form">
-      <input class="form-control mb-3" id="room-input" placeholder="請輸入房間代碼" required />
+      <div class="input-group mb-3">
+        <span class="input-group-text">請輸入房間代碼</span>
+        <input class="form-control" id="room-input" required />
+      </div>
       <button type="submit" class="btn btn-primary w-100 mb-3">加入房間</button>
     </form>
     <div class="card p-3" id="message-card" style="display: none;"></div>
