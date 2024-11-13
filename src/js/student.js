@@ -7,6 +7,8 @@ import rounds from '../data/rounds.json';
 const { gameRounds, stockRounds, houseRounds, stocksData, housesData } = rounds;
 
 $(document).ready(async function () {
+  const savedJoinCode = localStorage.getItem('lastJoinCode');
+  if (!savedJoinCode) return;
   let currentRoomData = null;
   const urlParams = new URLSearchParams(window.location.search);
   const roomId = urlParams.get('room');
@@ -179,6 +181,10 @@ $(document).ready(async function () {
       window.location.href = `./student-lobby.html`;
     }
     let playerData = roomData.players[playerId];
+    if (savedJoinCode !== playerData.password) {
+      alert('加入失敗，請重新輸入邀請代碼！');
+      window.location.href = `./student-lobby.html`;
+    }
 
     const stocksMap = new Map(
       stocksData.map((stock) => [stock.id.substring(1), stock])
