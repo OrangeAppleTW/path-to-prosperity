@@ -255,7 +255,7 @@ $(document).ready(async function () {
       $('#total-house-assets').val(totalHouseAssets);
 
       $('#player-info').text(
-        `玩家 ${playerId} / 房間 ${roomId} / ${
+        `房間 ${roomId} / 玩家 ${playerId} / ${
           currentGameRound.icon
         } 第 ${currentGameRoundId} 回合：${currentGameRound.event}${
           nextGameRound.event == '無特殊事件' || nextGameRound.event == null

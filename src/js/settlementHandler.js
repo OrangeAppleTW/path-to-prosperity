@@ -114,7 +114,7 @@ export class SettlementHandler {
             <tr style="height: 48px" class="align-middle text-center">
               <th class="align-middle">玩家狀態</th>
               <th class="align-middle">玩家名稱</th>
-              <th class="align-middle">加入代號</th>
+              <th class="align-middle">邀請代號</th>
               <th class="align-middle">現金資產</th>
               <th class="align-middle">儲蓄資產</th>
               <th class="align-middle">股票資產</th>
