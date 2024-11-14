@@ -11,7 +11,7 @@ $(document).ready(function () {
   $('#room-form').submit(function (e) {
     e.preventDefault();
 
-    const joinCode = $('#room-input').val().trim();
+    let joinCode = $('#room-input').val().trim();
 
     if (joinCode === '') {
       displayMessage('請輸入加入代碼。');
@@ -24,10 +24,10 @@ $(document).ready(function () {
     }
 
     // 將輸入的代碼存儲到 localStorage
-    localStorage.setItem('lastJoinCode', joinCode);
 
     const roomId = joinCode.substring(0, 4);
     const password = roomId + joinCode.substring(4).toUpperCase();
+    localStorage.setItem('lastJoinCode', password);
 
     const submitButton = $(this).find('button[type="submit"]');
     submitButton.prop('disabled', true);
@@ -86,6 +86,7 @@ $(document).ready(function () {
   });
 
   function displayMessage(message) {
-    $('#message-card').html(`<p>${message}</p>`);
+    $('#message-card').html(`<p class="m-0">${message}</p>`);
+    $('#message-card').show();
   }
 });

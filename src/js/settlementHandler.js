@@ -1,5 +1,5 @@
 // src/js/settlementHandler.js
-import { ref, runTransaction } from 'firebase/database';
+import { ref, runTransaction, onValue } from 'firebase/database';
 import { Modal } from 'bootstrap';
 
 export class SettlementHandler {
@@ -15,14 +15,78 @@ export class SettlementHandler {
     );
     this.currentRoomData = null;
     this.initializeEventListeners();
+    this.initializeRoomListener();
+  }
+
+  initializeRoomListener() {
+    const roomRef = ref(this.rtdb, `rooms/${this.roomId}`);
+
+    onValue(
+      roomRef,
+      (snapshot) => {
+        if (!snapshot.exists()) {
+          console.error('教室資料不存在');
+          return;
+        }
+
+        this.currentRoomData = snapshot.val();
+        const players = this.currentRoomData.players;
+        const playersArray = []; // 用於計算排名
+
+        // 更新表格中的動態數據
+        for (const playerId in players) {
+          if (players.hasOwnProperty(playerId)) {
+            const player = players[playerId];
+            const stocksNetWorth = this.calculateStocksNetWorth(player);
+            const housesNetWorth = this.calculateHousesNetWorth(player);
+            const cash = player.cash || 0;
+            const savings = player.savings || 0;
+            const totalAssets =
+              cash + savings + stocksNetWorth + housesNetWorth;
+
+            // 儲存計算結果用於排名
+            playersArray.push({ playerId, totalAssets });
+
+            // 更新玩家狀態
+            const status =
+              player.joinedAt === 0
+                ? "<span class='badge bg-secondary'>未加入</span>"
+                : "<span class='badge bg-success'>已加入</span>";
+            $(`tr[data-player-id="${playerId}"] td:first-child`).html(status);
+
+            // 更新各項資產數據
+
+            $(`tr[data-player-id="${playerId}"] td:nth-child(5)`).text(savings);
+            $(`tr[data-player-id="${playerId}"] td:nth-child(6)`).text(
+              stocksNetWorth
+            );
+            $(`tr[data-player-id="${playerId}"] td:nth-child(7)`).text(
+              housesNetWorth
+            );
+            $(`tr[data-player-id="${playerId}"] td:nth-child(8)`).text(
+              totalAssets
+            );
+          }
+        }
+
+        // 計算並更新排名
+        playersArray.sort((a, b) => b.totalAssets - a.totalAssets);
+        playersArray.forEach((playerData, index) => {
+          const rank = index + 1;
+          this.currentRoomData.players[playerData.playerId].assetsRank = rank;
+          $(`tr[data-player-id="${playerData.playerId}"] td:nth-child(9)`).text(
+            rank
+          );
+        });
+      },
+      (error) => {
+        console.error('監聽教室資料時出錯:', error);
+      }
+    );
   }
 
   initializeEventListeners() {
     $('#settlement-button').click(() => this.handleSettlementClick());
-  }
-
-  setCurrentRoomData(roomData) {
-    this.currentRoomData = roomData;
   }
 
   calculateHousePriceChange() {
@@ -146,7 +210,7 @@ export class SettlementHandler {
             <td class="col-1 align-middle">玩家 ${playerId}</td>
             <td class="col-1 align-middle">${player.password}</td>
             <td class="col-2 align-middle">
-              <input type="number" class="form-control cash-input" step="50" data-player-id="${playerId}" value="${cash}">
+              <input type="number" min=0 class="form-control cash-input" step="50" data-player-id="${playerId}" value="${cash}">
             </td>
             <td class="col-1 align-middle">${player.savings}</td>
             <td class="col-1 align-middle">${stocksNetWorth}</td>

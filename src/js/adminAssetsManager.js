@@ -107,7 +107,7 @@ export class AdminAssetsManager {
 
       this.validateAllAssetButtons();
       alert('已新增到持有中的資產中');
-      console.log(`Added free asset with propertyId: ${newPropertyId}`);
+      // console.log(`Added free asset with propertyId: ${newPropertyId}`);
     } catch (error) {
       console.error('新增免費資產失敗:', error);
       alert('新增免費資產失敗，請稍後再試。');
@@ -163,8 +163,16 @@ export class AdminAssetsManager {
 
     // 綁定管理按鈕
     $('#admin-button').click(() => {
+      if (this.currentRoomData?.gameState?.currentPlayer) {
+        $('#admin-player-select').val(
+          this.currentRoomData.gameState.currentPlayer
+        );
+      }
+
       this.modal.show();
       this.renderAssetsList();
+      this.validateAllAssetButtons();
+      this.updateSavingsDisplay();
     });
 
     $('#admin-player-select').on('change', () => {
@@ -274,7 +282,7 @@ export class AdminAssetsManager {
 
     // 計算新的 ID
     const newId = propertyIds.length > 0 ? Math.max(...propertyIds) + 1 : 1;
-    console.log(`生成的新 property ID: ${newId}`);
+    // console.log(`生成的新 property ID: ${newId}`);
     return newId;
   }
 
@@ -343,7 +351,7 @@ export class AdminAssetsManager {
 
       this.validateAllAssetButtons();
       alert('已新增到持有中的資產中');
-      console.log(`Added asset with propertyId: ${newPropertyId}`);
+      // console.log(`Added asset with propertyId: ${newPropertyId}`);
     } catch (error) {
       console.error('新增資產失敗:', error);
       alert('新增資產失敗，請稍後再試。');
@@ -407,6 +415,9 @@ export class AdminAssetsManager {
     $playerSelect.empty();
 
     if (roomData?.players) {
+      const $playerSelect = $('#admin-player-select');
+      $playerSelect.empty();
+
       const players = Object.entries(roomData.players)
         .filter(([_, playerData]) => playerData.joinedAt > 0)
         .sort(([idA], [idB]) => idA.localeCompare(idB));
@@ -419,14 +430,10 @@ export class AdminAssetsManager {
         );
       });
 
-      // 如果有之前選擇的玩家，優先使用該玩家
-      if (currentSelectedPlayer && roomData.players[currentSelectedPlayer]) {
-        $playerSelect.val(currentSelectedPlayer);
-      } else if (roomData.gameState?.currentPlayer) {
+      // 優先使用 currentPlayer
+      if (roomData.gameState?.currentPlayer) {
         $playerSelect.val(roomData.gameState.currentPlayer);
       }
-
-      this.updateSavingsDisplay();
     }
 
     // 更新資產列表顯示
@@ -453,7 +460,7 @@ export class AdminAssetsManager {
     }
 
     const playerData = this.currentRoomData.players[selectedPlayerId];
-    console.log('Rendering assets for player:', selectedPlayerId, playerData);
+    // console.log('Rendering assets for player:', selectedPlayerId, playerData);
     let html = `
         <div class="table-responsive">
             <table class="table table-bordered m-0">
@@ -485,7 +492,7 @@ export class AdminAssetsManager {
 
       if (properties.length > 0) {
         properties.forEach(([propertyId, property]) => {
-          console.log('Processing property:', propertyId, property);
+          // console.log('Processing property:', propertyId, property);
 
           let assetData;
           let assetType;

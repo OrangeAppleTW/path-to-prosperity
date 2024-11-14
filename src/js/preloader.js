@@ -97,7 +97,7 @@ export class Preloader {
 
     try {
       await Promise.all(essentialPromises);
-      console.log('Essential images loaded');
+      // console.log('Essential images loaded');
       return true;
     } catch (error) {
       console.error('Error loading essential images:', error);

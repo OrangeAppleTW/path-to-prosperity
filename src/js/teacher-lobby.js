@@ -5,17 +5,29 @@ import { ref, get, set, onValue, off } from 'firebase/database'; // 引入 Realt
 
 // 生成唯一的密碼碼
 function generateUniqueCodes(playNumLimit) {
+  // 定義可用的字母（排除 O, I, L 等容易混淆的字母）
+  const validLetters = 'ABCDEFGHJKMNPQRSTUVWXYZ';
   const codes = new Set();
+
   while (codes.size < playNumLimit) {
-    // 生成兩位隨機小寫字母
-    const code = String.fromCharCode(
-      65 + Math.floor(Math.random() * 26),
-      65 + Math.floor(Math.random() * 26)
-    );
+    // 隨機選擇第一個字母
+    const firstChar =
+      validLetters[Math.floor(Math.random() * validLetters.length)];
+
+    // 為第二個字母創建一個臨時數組（排除第一個字母）
+    const secondValidLetters = validLetters.replace(firstChar, '');
+
+    // 隨機選擇第二個字母
+    const secondChar =
+      secondValidLetters[Math.floor(Math.random() * secondValidLetters.length)];
+
+    // 組合兩個字母
+    const code = firstChar + secondChar;
 
     // 將組合加入到 Set 中確保唯一性
     codes.add(code);
   }
+
   return Array.from(codes);
 }
 
@@ -43,6 +55,7 @@ $(document).ready(function () {
 
     if (roomCode != '1234') {
       alert('暫不開放其他房間');
+      $('#message-card').hide().empty();
       return;
     }
 
@@ -173,12 +186,13 @@ $(document).ready(function () {
   // 顯示玩家資訊的函數
   function displayPlayers(players) {
     let htmlContent = `
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>玩家</th>
-            <th>邀請代碼</th>
-            <th>狀態</th>
+    <div style="height: 50vh; overflow-y: scroll">
+      <table class="table table-bordered m-0" >
+        <thead class="table-secondary">
+          <tr style="height: 48px" class="align-middle text-center">
+            <th class="align-middle">玩家狀態</th>
+            <th class="align-middle">玩家名稱</th>
+            <th class="align-middle">邀請代碼</th>
           </tr>
         </thead>
         <tbody>
@@ -197,10 +211,10 @@ $(document).ready(function () {
             : "<span class='badge bg-success'>已加入</span>";
 
         htmlContent += `
-          <tr>
-            <td>${playerId}</td>
-            <td>${player.password}</td>
-            <td>${status}</td>
+          <tr style="height: 48px" class="align-middle text-center">
+          <td class="col-1 align-middle">${status}</td>
+            <td class="col-1 align-middle">玩家 ${playerId}</td>
+            <td class="col-1 align-middle">${player.password}</td>
           </tr>
         `;
       }
@@ -209,8 +223,9 @@ $(document).ready(function () {
     htmlContent += `
         </tbody>
       </table>
+      </div>
       <a class="w-100" href="./teacher.html?room=${currentRoomCode}">
-        <button type="button" class="w-100 btn btn-primary">前往房間</button>
+        <button type="button" class="mt-3 w-100 btn btn-success">前往房間</button>
       </a>
     `;
 

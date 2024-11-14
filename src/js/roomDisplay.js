@@ -107,9 +107,9 @@ export class RoomDisplay {
       found = true;
     }
 
-    if (!found) {
-      console.warn(`Select ${selectId} 中未找到匹配的選項值：${value}`);
-    }
+    // if (!found) {
+    //   console.warn(`Select ${selectId} 中未找到匹配的選項值：${value}`);
+    // }
   }
 
   setInsuranceSelectValue(selectId, insuranceCount) {
@@ -126,11 +126,11 @@ export class RoomDisplay {
       }
     });
 
-    if (!found) {
-      console.warn(
-        `Select ${selectId} 中未找到匹配的保險數量選項：${insuranceCount}`
-      );
-    }
+    // if (!found) {
+    //   console.warn(
+    //     `Select ${selectId} 中未找到匹配的保險數量選項：${insuranceCount}`
+    //   );
+    // }
   }
 
   parseInsuranceValue(text) {

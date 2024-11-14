@@ -92,9 +92,9 @@ export class CardDrawer {
                 <div id="card-info" class="mt-3"></div>
               </div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="startDrawButton">抽一張</button>
-                <button type="button" class="btn btn-success" id="drawTwoButton">抽二張</button>
-                <button type="button" class="btn btn-success" id="buyCardButton" disabled>購買</button>
+                <button type="button" class="btn btn-success" id="startDrawButton">抽一張</button>
+                <button type="button" class="btn btn-danger text-light" id="drawTwoButton">抽二張</button>
+                <button type="button" class="btn btn-danger text-light" id="buyCardButton" disabled>購買</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
               </div>
             </div>

@@ -36,8 +36,8 @@ $(document).ready(async function () {
         </div>
     `).css({
       position: 'fixed',
-      bottom: '50px',
-      left: '50px',
+      top: '50px',
+      right: '50px',
       'z-index': '1050',
       'min-width': '200px',
       opacity: 0,
@@ -177,6 +177,7 @@ $(document).ready(async function () {
 
   function renderPropertiesTable(roomData) {
     if (!roomData.createdAt) return;
+
     if (!Object.keys(roomData.players).includes(playerId)) {
       window.location.href = `./student-lobby.html`;
     }
@@ -302,6 +303,8 @@ $(document).ready(async function () {
             : `（請注意下一回合要${nextGameRound.event}）`
         }`
       );
+    } else {
+      window.location.href = `./student-lobby.html`;
     }
   });
 

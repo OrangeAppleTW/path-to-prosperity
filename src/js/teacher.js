@@ -212,7 +212,7 @@ $(document).ready(function () {
 
     return update(ref(rtdb), updates)
       .then(() => {
-        console.log(`成功更新 ${field} 為 ${value}`);
+        // console.log(`成功更新 ${field} 為 ${value}`);
       })
       .catch((error) => {
         console.error(`更新 ${field} 時出錯:`, error);
@@ -246,13 +246,12 @@ $(document).ready(function () {
       roomRef,
       (snapshot) => {
         if (!snapshot.exists()) {
-          $('#message-card').html('<p>教室資料不存在。</p>');
-          return;
+          window.location.href = `./teacher-lobby.html`;
         }
 
         const roomData = snapshot.val();
         currentRoomData = roomData;
-        console.log('教室資料更新:', roomData);
+        // console.log('教室資料更新:', roomData);
         roomDisplay.displayRoomInfo(roomData);
         selectors.player.updatePlayerList(roomData);
         const currentStockRound = Number(roomData.gameState.stockRound);
@@ -307,7 +306,7 @@ $(document).ready(function () {
 
         insuranceHandler.setCurrentRoomData(roomData);
         savingsHandler.setCurrentRoomData(roomData);
-        settlementHandler.setCurrentRoomData(roomData);
+        // settlementHandler.setCurrentRoomData(roomData);
         adminAssetsManager.updateRoomData(roomData);
       },
       (error) => {
