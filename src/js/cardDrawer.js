@@ -450,7 +450,7 @@ export class CardDrawer {
           cardInfo.innerHTML = `
           <p>股票階段：${
             this.roomData?.gameState?.stockRound || 0
-          } / 漲跌幅：${formattedPriceChange} / 目前價格：${currentPrice}</p>
+          } / 漲跌幅：${formattedPriceChange} / <span class="text-danger">目前價格：${currentPrice}</span></p>
         `;
         }
       } else if (prefix === 'house') {
