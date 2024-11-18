@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import { ref, get, update } from 'firebase/database';
+import { db } from './common';
 
 $(document).ready(function () {
   // 頁面加載時，檢查 localStorage 中是否有存儲的密碼
@@ -33,7 +34,7 @@ $(document).ready(function () {
     submitButton.prop('disabled', true);
     displayMessage('正在處理請求...');
 
-    const database = window.firebase.rtdb;
+    const database = db;
     const roomRef = ref(database, 'rooms/' + roomId);
 
     get(roomRef)

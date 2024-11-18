@@ -5,8 +5,8 @@ import $ from 'jquery';
 import Modal from 'bootstrap/js/dist/modal';
 
 export class AdminAssetsManager {
-  constructor(rtdb, roomId, stocksData, housesData, stockRounds, houseRounds) {
-    this.rtdb = rtdb;
+  constructor(db, roomId, stocksData, housesData, stockRounds, houseRounds) {
+    this.db = db;
     this.roomId = roomId;
     this.stocksData = stocksData;
     this.housesData = housesData;
@@ -236,7 +236,7 @@ export class AdminAssetsManager {
         },
       });
 
-      await update(ref(this.rtdb), updates);
+      await update(ref(this.db), updates);
     } catch (error) {
       console.error('更新儲蓄失敗:', error);
       throw error;
@@ -359,7 +359,7 @@ export class AdminAssetsManager {
   }
 
   listenForRoomData() {
-    const roomRef = ref(this.rtdb, `rooms/${this.roomId}`);
+    const roomRef = ref(this.db, `rooms/${this.roomId}`);
     onValue(roomRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
@@ -750,7 +750,7 @@ export class AdminAssetsManager {
     updates[`rooms/${this.roomId}/players/${playerId}/savings`] = newSavings;
 
     try {
-      await update(ref(this.rtdb), updates);
+      await update(ref(this.db), updates);
       this.updateSavingsDisplay();
     } catch (error) {
       console.error('應用儲蓄變更失敗:', error);
@@ -764,7 +764,7 @@ export class AdminAssetsManager {
     updates[`rooms/${this.roomId}/players/${playerId}/savings`] = oldSavings;
 
     try {
-      await update(ref(this.rtdb), updates);
+      await update(ref(this.db), updates);
       this.updateSavingsDisplay();
     } catch (error) {
       console.error('回復儲蓄變更失敗:', error);
@@ -801,7 +801,7 @@ export class AdminAssetsManager {
     ] = asset;
 
     try {
-      await update(ref(this.rtdb), updates);
+      await update(ref(this.db), updates);
       this.renderAssetsList(playerId);
     } catch (error) {
       console.error('添加資產失敗:', error);
@@ -820,7 +820,7 @@ export class AdminAssetsManager {
     updates[`${propertyPath}/soldPrice`] = soldPrice;
 
     try {
-      await update(ref(this.rtdb), updates);
+      await update(ref(this.db), updates);
       // 使用特定的 playerId 重新渲染列表
       this.renderAssetsList(playerId);
     } catch (error) {
@@ -838,7 +838,7 @@ export class AdminAssetsManager {
     updates[`${propertyPath}/usedAt`] = usedAt;
 
     try {
-      await update(ref(this.rtdb), updates);
+      await update(ref(this.db), updates);
       this.renderAssetsList(playerId);
     } catch (error) {
       console.error('使用資產失敗:', error);
@@ -854,7 +854,7 @@ export class AdminAssetsManager {
     updates[`${propertyPath}/usedAt`] = 0;
 
     try {
-      await update(ref(this.rtdb), updates);
+      await update(ref(this.db), updates);
       this.renderAssetsList(playerId);
     } catch (error) {
       console.error('回復使用資產失敗:', error);

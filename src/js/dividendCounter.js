@@ -4,8 +4,8 @@ import $ from 'jquery';
 import Modal from 'bootstrap/js/dist/modal';
 
 export class DividendCounter {
-  constructor(rtdb, roomId, stocksData, stockRounds) {
-    this.rtdb = rtdb;
+  constructor(db, roomId, stocksData, stockRounds) {
+    this.db = db;
     this.roomId = roomId;
     this.stocksData = stocksData;
     this.stockRounds = stockRounds;
@@ -17,7 +17,7 @@ export class DividendCounter {
 
   initializeListeners() {
     // 監聽房間資料變更
-    const roomRef = ref(this.rtdb, `rooms/${this.roomId}`);
+    const roomRef = ref(this.db, `rooms/${this.roomId}`);
     onValue(roomRef, (snapshot) => {
       if (snapshot.exists()) {
         this.currentRoomData = snapshot.val();

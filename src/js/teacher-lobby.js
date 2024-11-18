@@ -2,6 +2,7 @@
 
 import $ from 'jquery';
 import { ref, get, set, onValue, off } from 'firebase/database'; // 引入 Realtime Database 函數
+import { db } from './common';
 
 // 生成唯一的密碼碼
 function generateUniqueCodes(playNumLimit) {
@@ -63,7 +64,7 @@ $(document).ready(function () {
     submitButton.prop('disabled', true); // 禁用提交按鈕
     displayMessage('正在處理請求...');
 
-    const database = window.firebase.rtdb; // 獲取 Realtime Database 實例
+    const database = db; // 獲取 Realtime Database 實例
     const roomRef = ref(database, 'rooms/' + roomCode);
 
     // 移除之前的監聽器（如果有）

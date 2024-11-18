@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import { ref, onValue, update } from 'firebase/database';
-import { rtdb } from './common';
+import { db } from './common';
 import { Preloader } from './preloader';
 import { DragHandler } from './dragHandler';
 import { RoomDisplay } from './roomDisplay';
@@ -32,8 +32,8 @@ let currentStockRoundDividendChange = 0;
 let currentHouseRoundPriceChange = 0;
 
 class DiceHandler {
-  constructor(rtdb, roomId, sounds, getCurrentPlayerId) {
-    this.rtdb = rtdb;
+  constructor(db, roomId, sounds, getCurrentPlayerId) {
+    this.db = db;
     this.roomId = roomId;
     this.sounds = sounds;
     this.getCurrentPlayerId = getCurrentPlayerId;
@@ -42,7 +42,7 @@ class DiceHandler {
   }
 
   initializeDiceListener() {
-    const roomRef = ref(this.rtdb, `rooms/${this.roomId}/players`);
+    const roomRef = ref(this.db, `rooms/${this.roomId}/players`);
     onValue(roomRef, (snapshot) => {
       if (!snapshot.exists()) return;
 
@@ -73,7 +73,7 @@ class DiceHandler {
     };
 
     try {
-      await update(ref(this.rtdb), updates);
+      await update(ref(this.db), updates);
     } catch (error) {
       console.error('更新骰子結果時出錯:', error);
     }
@@ -96,7 +96,7 @@ class DiceHandler {
     };
 
     try {
-      await update(ref(this.rtdb), updates);
+      await update(ref(this.db), updates);
     } catch (error) {
       console.error('重置骰子狀態時出錯:', error);
     }
@@ -109,7 +109,7 @@ class DiceHandler {
     };
 
     try {
-      await update(ref(this.rtdb), updates);
+      await update(ref(this.db), updates);
     } catch (error) {
       console.error('開始骰子連線時出錯:', error);
     }
@@ -122,7 +122,7 @@ class DiceHandler {
     };
 
     try {
-      await update(ref(this.rtdb), updates);
+      await update(ref(this.db), updates);
     } catch (error) {
       console.error('骰子收回時出錯:', error);
     }
@@ -210,7 +210,7 @@ $(document).ready(function () {
       }
     }
 
-    return update(ref(rtdb), updates)
+    return update(ref(db), updates)
       .then(() => {
         // console.log(`成功更新 ${field} 為 ${value}`);
       })
@@ -220,7 +220,7 @@ $(document).ready(function () {
   };
 
   const adminAssetsManager = new AdminAssetsManager(
-    rtdb,
+    db,
     roomId,
     stocksData,
     housesData,
@@ -228,10 +228,10 @@ $(document).ready(function () {
     houseRounds
   );
 
-  const interestCounter = new InterestCounter(rtdb, roomId);
-  const rentCounter = new RentCounter(rtdb, roomId, housesData, houseRounds);
+  const interestCounter = new InterestCounter(db, roomId);
+  const rentCounter = new RentCounter(db, roomId, housesData, houseRounds);
   const dividendCounter = new DividendCounter(
-    rtdb,
+    db,
     roomId,
     stocksData,
     stockRounds
@@ -239,7 +239,7 @@ $(document).ready(function () {
 
   // 初始化房間監聽器
   const initializeRoomListener = () => {
-    const roomRef = ref(rtdb, `rooms/${roomId}`);
+    const roomRef = ref(db, `rooms/${roomId}`);
     const roomDisplay = new RoomDisplay('#message-card');
 
     onValue(
@@ -408,7 +408,7 @@ $(document).ready(function () {
     $('#card-loading').hide();
 
     // 初始化 AssetsManager
-    assetsManager = new AssetsManager(rtdb, roomId, stocksData, housesData);
+    assetsManager = new AssetsManager(db, roomId, stocksData, housesData);
 
     // 初始化選擇器
     selectors = {
@@ -434,11 +434,11 @@ $(document).ready(function () {
 
     // 初始化卡片繪製器和保險處理器
     cardDrawer = new CardDrawer(baseURL, sounds, imageSets);
-    insuranceHandler = new InsuranceHandler(rtdb, roomId);
-    settingsHandler = new SettingsHandler(rtdb, roomId);
-    savingsHandler = new SavingsHandler(rtdb, roomId);
+    insuranceHandler = new InsuranceHandler(db, roomId);
+    settingsHandler = new SettingsHandler(db, roomId);
+    savingsHandler = new SavingsHandler(db, roomId);
     settlementHandler = new SettlementHandler(
-      rtdb,
+      db,
       roomId,
       stocksData,
       housesData,
@@ -494,7 +494,7 @@ $(document).ready(function () {
   });
 
   const diceHandler = new DiceHandler(
-    rtdb,
+    db,
     roomId,
     sounds,
     () => currentRoomData?.gameState?.currentPlayer
@@ -527,7 +527,7 @@ $(document).ready(function () {
 
     if (!diceHandler.diceModule) {
       diceHandler.diceModule = new DiceModule({
-        rtdb,
+        db,
         roomId,
         playerId: currentPlayerId,
         container: '#dice-result',

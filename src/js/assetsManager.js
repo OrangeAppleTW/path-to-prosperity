@@ -4,8 +4,8 @@ import { ref, update } from 'firebase/database';
 import $ from 'jquery';
 
 export class AssetsManager {
-  constructor(rtdb, roomId, stocksData, housesData) {
-    this.rtdb = rtdb;
+  constructor(db, roomId, stocksData, housesData) {
+    this.db = db;
     this.roomId = roomId;
     this.stocksData = stocksData;
     this.housesData = housesData;
@@ -368,7 +368,7 @@ export class AssetsManager {
       updates[propertyPath] = propertyData;
 
       // 等待 Firebase 更新完成
-      await update(ref(this.rtdb), updates);
+      await update(ref(this.db), updates);
 
       // 更新本地數據
       playerData.properties[propertyId] = propertyData;

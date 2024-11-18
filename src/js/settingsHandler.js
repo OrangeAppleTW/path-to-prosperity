@@ -2,8 +2,8 @@ import { ref, set } from 'firebase/database';
 import { Modal } from 'bootstrap';
 
 export class SettingsHandler {
-  constructor(rtdb, roomId) {
-    this.rtdb = rtdb;
+  constructor(db, roomId) {
+    this.db = db;
     this.roomId = roomId;
     this.settingsModal = new Modal(document.getElementById('settingsModal'));
 
@@ -47,7 +47,7 @@ export class SettingsHandler {
           if (confirm('確定要刪除房間並返回大廳嗎？')) {
             try {
               // 刪除房間數據
-              const roomRef = ref(this.rtdb, `rooms/${this.roomId}`);
+              const roomRef = ref(this.db, `rooms/${this.roomId}`);
               await set(roomRef, null);
 
               // 關閉 Modal

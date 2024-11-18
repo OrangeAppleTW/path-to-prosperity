@@ -3,8 +3,8 @@ import { ref, runTransaction, onValue } from 'firebase/database';
 import { Modal } from 'bootstrap';
 
 export class SettlementHandler {
-  constructor(rtdb, roomId, stocksData, housesData, stockRounds, houseRounds) {
-    this.rtdb = rtdb;
+  constructor(db, roomId, stocksData, housesData, stockRounds, houseRounds) {
+    this.db = db;
     this.roomId = roomId;
     this.stocksData = stocksData;
     this.housesData = housesData;
@@ -19,7 +19,7 @@ export class SettlementHandler {
   }
 
   initializeRoomListener() {
-    const roomRef = ref(this.rtdb, `rooms/${this.roomId}`);
+    const roomRef = ref(this.db, `rooms/${this.roomId}`);
 
     onValue(
       roomRef,
@@ -251,7 +251,7 @@ export class SettlementHandler {
   }
 
   updatePlayerCash(playerId, newCashValue) {
-    const roomRef = ref(this.rtdb, `rooms/${this.roomId}`);
+    const roomRef = ref(this.db, `rooms/${this.roomId}`);
     runTransaction(roomRef, (currentData) => {
       if (currentData && currentData.players && currentData.players[playerId]) {
         currentData.players[playerId].cash = newCashValue;

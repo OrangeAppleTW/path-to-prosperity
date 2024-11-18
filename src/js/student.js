@@ -1,7 +1,7 @@
 // src/js/student.js
 import { DiceModule } from './diceModule';
 import { ref, onValue, update, get } from 'firebase/database';
-import { rtdb } from './common';
+import { db } from './common';
 import { Preloader } from './preloader';
 import rounds from '../data/rounds.json';
 const { gameRounds, stockRounds, houseRounds, stocksData, housesData } = rounds;
@@ -19,7 +19,7 @@ $(document).ready(async function () {
   }
   const preloader = new Preloader('/');
   await preloader.loadEssentialImages();
-  const roomRef = ref(rtdb, `rooms/${roomId}`);
+  const roomRef = ref(db, `rooms/${roomId}`);
   let isUpdating = false;
   let currentStockRound = 0;
   let currentHouseRound = 0;
@@ -164,7 +164,7 @@ $(document).ready(async function () {
       propertyData.soldPrice = soldPrice;
 
       updates[propertyPath] = propertyData;
-      await update(ref(rtdb), updates);
+      await update(ref(db), updates);
 
       return true;
     } catch (error) {
@@ -310,13 +310,13 @@ $(document).ready(async function () {
 
   // 確保在 DOM 中存在 #dice-container
   const diceModule = new DiceModule({
-    rtdb,
+    db,
     roomId,
     playerId,
     container: '#dice-container',
   });
 
-  const playerRef = ref(rtdb, `rooms/${roomId}/players/${playerId}`);
+  const playerRef = ref(db, `rooms/${roomId}/players/${playerId}`);
 
   if (roomId != '1234') {
     alert('暫不開放其他教室');
@@ -375,7 +375,7 @@ $(document).ready(async function () {
               const updates = {};
               updates[`rooms/${roomId}/players/${playerId}/rollStatus`] =
                 'completed';
-              update(ref(rtdb), updates).catch((error) => {
+              update(ref(db), updates).catch((error) => {
                 console.error('更新狀態失敗:', error);
               });
             });
@@ -397,7 +397,7 @@ $(document).ready(async function () {
     try {
       const updates = {};
       updates[`rooms/${roomId}/players/${playerId}/rollStatus`] = 'rolled';
-      await update(ref(rtdb), updates);
+      await update(ref(db), updates);
       diceModule.diceSound.play().catch((e) => console.log('播放音效失敗:', e));
     } catch (error) {
       console.error('擲骰時出錯:', error);

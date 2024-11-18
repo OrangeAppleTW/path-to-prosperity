@@ -3,8 +3,8 @@ import { ref, runTransaction } from 'firebase/database';
 import { Modal } from 'bootstrap';
 
 export class InsuranceHandler {
-  constructor(rtdb, roomId) {
-    this.rtdb = rtdb;
+  constructor(db, roomId) {
+    this.db = db;
     this.roomId = roomId;
     this.buyInsuranceModal = new Modal(
       document.getElementById('buyInsuranceModal')
@@ -67,7 +67,7 @@ export class InsuranceHandler {
           propertyIds.length > 0 ? Math.max(...propertyIds) : 0;
         const newPropertiesId = maxPropertiesId + 1;
 
-        const roomRef = ref(this.rtdb, `rooms/${this.roomId}`);
+        const roomRef = ref(this.db, `rooms/${this.roomId}`);
 
         await runTransaction(roomRef, (currentData) => {
           if (!currentData || currentData.gameState.insurances <= 0) return;

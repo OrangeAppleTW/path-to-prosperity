@@ -4,8 +4,8 @@ import $ from 'jquery';
 import Modal from 'bootstrap/js/dist/modal';
 
 export class RentCounter {
-  constructor(rtdb, roomId, housesData, houseRounds) {
-    this.rtdb = rtdb;
+  constructor(db, roomId, housesData, houseRounds) {
+    this.db = db;
     this.roomId = roomId;
     this.housesData = housesData;
     this.houseRounds = houseRounds;
@@ -17,7 +17,7 @@ export class RentCounter {
 
   initializeListeners() {
     // 監聽房間資料變更
-    const roomRef = ref(this.rtdb, `rooms/${this.roomId}`);
+    const roomRef = ref(this.db, `rooms/${this.roomId}`);
     onValue(roomRef, (snapshot) => {
       if (snapshot.exists()) {
         this.currentRoomData = snapshot.val();

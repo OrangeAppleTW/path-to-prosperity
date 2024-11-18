@@ -128,7 +128,7 @@ const diceStyles = `
 
 export class DiceModule {
   constructor(options) {
-    this.rtdb = options.rtdb;
+    this.db = options.db;
     this.roomId = options.roomId;
     this.playerId = options.playerId;
     this.containerSelector = options.container || 'body';
@@ -176,7 +176,7 @@ export class DiceModule {
 
   initializeDiceListener() {
     const playerRef = ref(
-      this.rtdb,
+      this.db,
       `rooms/${this.roomId}/players/${this.playerId}`
     );
     onValue(playerRef, (snapshot) => {
@@ -219,7 +219,7 @@ export class DiceModule {
           ] = playerData.currentDiceValue;
           updates[`rooms/${this.roomId}/players/${this.playerId}/rollStatus`] =
             'completed';
-          update(ref(this.rtdb), updates).catch((error) => {
+          update(ref(this.db), updates).catch((error) => {
             console.error('更新狀態失敗:', error);
           });
         });

@@ -44,15 +44,14 @@ const firebaseConfig = {
 // 初始化 Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app);
-const rtdb = getDatabase(app); // 初始化 Realtime Database
+const db = getDatabase(app);
 
 // 如果需要 Analytics，可以取消註解以下代碼
 // const analytics = getAnalytics(app);
 
 // 將 Firebase 和 jQuery 暴露到全域變數（如果需要在 HTML 中直接訪問）
-window.firebase = { app, auth, db, rtdb };
-window.$ = $;
+// window.firebase = { app, auth, db };
+// window.$ = $;
 
 // 導出 Firebase 實例
-export { app, auth, db, rtdb };
+export { app, auth, db };

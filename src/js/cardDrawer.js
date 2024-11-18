@@ -3,7 +3,7 @@
 import rounds from '../data/rounds.json';
 import Modal from 'bootstrap/js/dist/modal';
 import { ref, onValue, runTransaction } from 'firebase/database';
-import { rtdb } from './common';
+import { db } from './common';
 
 export class CardDrawer {
   constructor(baseURL, sounds, imageSets) {
@@ -50,7 +50,7 @@ export class CardDrawer {
     this.roomId = urlParams.get('room');
 
     if (this.roomId) {
-      const roomRef = ref(rtdb, `rooms/${this.roomId}`);
+      const roomRef = ref(db, `rooms/${this.roomId}`);
       onValue(roomRef, (snapshot) => {
         if (snapshot.exists()) {
           this.roomData = snapshot.val();
@@ -306,7 +306,7 @@ export class CardDrawer {
   }
 
   async executePurchase(playerId, price) {
-    const roomRef = ref(rtdb, `rooms/${this.roomId}`);
+    const roomRef = ref(db, `rooms/${this.roomId}`);
 
     return runTransaction(roomRef, (currentData) => {
       if (!currentData) return;

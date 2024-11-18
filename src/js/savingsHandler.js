@@ -3,8 +3,8 @@ import { ref, runTransaction } from 'firebase/database';
 import { Modal } from 'bootstrap';
 
 export class SavingsHandler {
-  constructor(rtdb, roomId) {
-    this.rtdb = rtdb;
+  constructor(db, roomId) {
+    this.db = db;
     this.roomId = roomId;
     this.savingsModal = new Modal(document.getElementById('savingsModal'));
     this.currentRoomData = null;
@@ -47,7 +47,7 @@ export class SavingsHandler {
       );
 
       if (confirmed) {
-        const roomRef = ref(this.rtdb, `rooms/${this.roomId}`);
+        const roomRef = ref(this.db, `rooms/${this.roomId}`);
         await runTransaction(roomRef, (currentData) => {
           if (!currentData) return;
           const currentPlayer = currentData.players[currentPlayerId];
