@@ -1,69 +1,152 @@
 // src/js/student.js
 import { DiceModule } from './diceModule';
 import { ref, onValue, update, get } from 'firebase/database';
-import { db } from './common';
+import { auth, db } from './common';
+import { signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 import { Preloader } from './preloader';
 import rounds from '../data/rounds.json';
 const { gameRounds, stockRounds, houseRounds, stocksData, housesData } = rounds;
 
+async function validateJoinCode(roomId, playerId, joinCode) {
+  try {
+    const playerRef = ref(db, `rooms/${roomId}/players/${playerId}`);
+    const playerSnapshot = await get(playerRef);
+
+    if (!playerSnapshot.exists()) {
+      console.log('玩家不存在');
+      return false;
+    }
+
+    const playerData = playerSnapshot.val();
+    return playerData.password === joinCode;
+  } catch (error) {
+    console.error('驗證加入代碼時出錯:', error);
+    return false;
+  }
+}
+
 $(document).ready(async function () {
+  let authInitialized = false;
+  let isValidated = false;
+
+  // 進行匿名登入
+  try {
+    await signInAnonymously(auth);
+    console.log('匿名登入成功');
+  } catch (error) {
+    console.error('匿名登入失敗:', error);
+    alert('登入失敗，請重試');
+    window.location.href = './student-lobby.html';
+    return;
+  }
+
+  // 獲取必要參數
   const savedJoinCode = localStorage.getItem('lastJoinCode');
-  if (!savedJoinCode) return;
-  let currentRoomData = null;
   const urlParams = new URLSearchParams(window.location.search);
   const roomId = urlParams.get('room');
   const playerId = urlParams.get('player');
-  if (!roomId || !playerId) {
-    alert('無效的房間或玩家ID');
+
+  // 驗證基本參數
+  if (!savedJoinCode || !roomId || !playerId) {
+    console.log('缺少必要參數');
+    window.location.href = './student-lobby.html';
     return;
   }
-  const preloader = new Preloader('/');
-  await preloader.loadEssentialImages();
-  const roomRef = ref(db, `rooms/${roomId}`);
-  let isUpdating = false;
-  let currentStockRound = 0;
-  let currentHouseRound = 0;
-  let currentStockRoundPriceChange = 0;
-  let currentStockRoundDividendChange = 0;
-  let currentHouseRoundPriceChange = 0;
-  let totalStockAssets = 0;
-  let totalHouseAssets = 0;
 
-  function showDiceAlert(diceValue) {
-    const alertDiv = $(`
+  if (roomId !== '1234') {
+    alert('暫不開放其他教室');
+    window.location.href = './student-lobby.html';
+    return;
+  }
+
+  // 監聽認證狀態變化
+  onAuthStateChanged(auth, async (user) => {
+    if (!authInitialized) {
+      authInitialized = true;
+
+      if (!user) {
+        console.log('用戶未登入');
+        window.location.href = './student-lobby.html';
+        return;
+      }
+
+      console.log('已登入用戶:', user.uid);
+
+      // 驗證 joinCode
+      const isValid = await validateJoinCode(roomId, playerId, savedJoinCode);
+
+      if (!isValid) {
+        console.log('加入代碼驗證失敗');
+        alert('加入失敗，請重新輸入邀請代碼！');
+        window.location.href = './student-lobby.html';
+        return;
+      }
+
+      isValidated = true;
+      console.log('加入代碼驗證成功');
+
+      // 初始化頁面
+      initializePage();
+    }
+  });
+
+  async function initializePage() {
+    const diceModule = new DiceModule({
+      db,
+      roomId,
+      playerId,
+      container: '#dice-container',
+    });
+
+    let currentRoomData = null;
+    const preloader = new Preloader('/');
+    await preloader.loadEssentialImages();
+
+    // 這裡放置原本的初始化代碼
+    const roomRef = ref(db, `rooms/${roomId}`);
+    let currentStockRound = 0;
+    let currentHouseRound = 0;
+    let currentStockRoundPriceChange = 0;
+    let currentStockRoundDividendChange = 0;
+    let currentHouseRoundPriceChange = 0;
+    let totalStockAssets = 0;
+    let totalHouseAssets = 0;
+
+    function showDiceAlert(diceValue) {
+      const alertDiv = $(`
         <div class="dice-alert alert alert-danger" role="alert">
             有向前移動的話，記得跟銀行領取 ${diceValue * 100} 元！
         </div>
     `).css({
-      position: 'fixed',
-      top: '50px',
-      right: '50px',
-      'z-index': '1050',
-      'min-width': '200px',
-      opacity: 0,
-    });
-
-    // 等待1秒後開始顯示
-    setTimeout(() => {
-      $('body').append(alertDiv);
-
-      // 使用 requestAnimationFrame 確保動畫流暢
-      requestAnimationFrame(() => {
-        // 顯示動畫
-        alertDiv.animate({ opacity: 1 }, 500, function () {
-          // 顯示3秒後開始淡出
-          setTimeout(() => {
-            alertDiv.animate({ opacity: 0 }, 500, function () {
-              $(this).remove();
-            });
-          }, 3000);
-        });
+        position: 'fixed',
+        top: '50px',
+        right: '50px',
+        'z-index': '1050',
+        'min-width': '200px',
+        opacity: 0,
       });
-    }, 1000);
-  }
 
-  function generateTableHeader() {
-    return `
+      // 等待1秒後開始顯示
+      setTimeout(() => {
+        $('body').append(alertDiv);
+
+        // 使用 requestAnimationFrame 確保動畫流暢
+        requestAnimationFrame(() => {
+          // 顯示動畫
+          alertDiv.animate({ opacity: 1 }, 500, function () {
+            // 顯示3秒後開始淡出
+            setTimeout(() => {
+              alertDiv.animate({ opacity: 0 }, 500, function () {
+                $(this).remove();
+              });
+            }, 3000);
+          });
+        });
+      }, 1000);
+    }
+
+    function generateTableHeader() {
+      return `
       <table class="table m-0 table-bordered">
         <thead>
           <tr class="text-center table-secondary" style="height: 48px">
@@ -78,58 +161,58 @@ $(document).ready(async function () {
         </thead>
         <tbody>
     `;
-  }
+    }
 
-  function generatePropertyRow(property, key, stocksMap, housesMap) {
-    let assetBadge, assetDataName, currentPrice;
-    let rawExpectedReturn, expectedReturn;
-    let currentDividend, currentRent;
+    function generatePropertyRow(property, key, stocksMap, housesMap) {
+      let assetBadge, assetDataName, currentPrice;
+      let rawExpectedReturn, expectedReturn;
+      let currentDividend, currentRent;
 
-    if (property.soldAt > 0) return '';
-    if (property.usedAt > 0) return '';
+      if (property.soldAt > 0) return '';
+      if (property.usedAt > 0) return '';
 
-    if (property.type === 'stock' || property.type === 'house') {
-      const assetId = property.property.split('-').pop();
-      const isStock = property.type === 'stock';
-      const assetMap = isStock ? stocksMap : housesMap;
-      const assetData = assetMap.get(assetId);
-      if (!assetData) return '';
-      currentPrice = isStock
-        ? assetData.price + currentStockRoundPriceChange
-        : assetData.price + currentHouseRoundPriceChange;
+      if (property.type === 'stock' || property.type === 'house') {
+        const assetId = property.property.split('-').pop();
+        const isStock = property.type === 'stock';
+        const assetMap = isStock ? stocksMap : housesMap;
+        const assetData = assetMap.get(assetId);
+        if (!assetData) return '';
+        currentPrice = isStock
+          ? assetData.price + currentStockRoundPriceChange
+          : assetData.price + currentHouseRoundPriceChange;
 
-      if (isStock) {
-        totalStockAssets += currentPrice;
-      } else {
-        totalHouseAssets += currentPrice;
+        if (isStock) {
+          totalStockAssets += currentPrice;
+        } else {
+          totalHouseAssets += currentPrice;
+        }
+
+        rawExpectedReturn = currentPrice - property.buyPrice;
+        expectedReturn =
+          rawExpectedReturn > 0
+            ? `+${rawExpectedReturn}`
+            : `${rawExpectedReturn}`;
+        assetBadge = isStock
+          ? '<span class="badge bg-warning text-light">股票</span>'
+          : '<span class="badge bg-danger text-light">房屋</span>';
+        assetDataName = assetData.name;
+        currentDividend = isStock
+          ? assetData.dividend + currentStockRoundDividendChange
+          : '-';
+        currentRent = isStock ? '-' : assetData.rent;
       }
 
-      rawExpectedReturn = currentPrice - property.buyPrice;
-      expectedReturn =
-        rawExpectedReturn > 0
-          ? `+${rawExpectedReturn}`
-          : `${rawExpectedReturn}`;
-      assetBadge = isStock
-        ? '<span class="badge bg-warning text-light">股票</span>'
-        : '<span class="badge bg-danger text-light">房屋</span>';
-      assetDataName = assetData.name;
-      currentDividend = isStock
-        ? assetData.dividend + currentStockRoundDividendChange
-        : '-';
-      currentRent = isStock ? '-' : assetData.rent;
-    }
+      if (property.type === 'insurance') {
+        assetBadge = '<span class="badge bg-success text-light">保險</span>';
+        assetDataName = '保險卡';
+        currentPrice = '-';
+        rawExpectedReturn = '-';
+        currentDividend = '-';
+        currentRent = '-';
+        expectedReturn = '-';
+      }
 
-    if (property.type === 'insurance') {
-      assetBadge = '<span class="badge bg-success text-light">保險</span>';
-      assetDataName = '保險卡';
-      currentPrice = '-';
-      rawExpectedReturn = '-';
-      currentDividend = '-';
-      currentRent = '-';
-      expectedReturn = '-';
-    }
-
-    return `
+      return `
       <tr style="height: 48px">
         <td class="align-middle text-center">${assetBadge}</td>
         <td class="align-middle text-center">${assetDataName}</td>
@@ -140,87 +223,87 @@ $(document).ready(async function () {
         <td class="align-middle text-center">${expectedReturn}</td>
       </tr>
     `;
-  }
-
-  async function updatePropertyStatus(
-    propertyId,
-    soldAtValue,
-    soldPrice,
-    playerData
-  ) {
-    if (isUpdating) {
-      alert('請等待當前操作完成');
-      return;
     }
-    isUpdating = true;
-    try {
-      const updates = {};
-      const propertyPath = `rooms/${roomId}/players/${playerId}/properties/${propertyId}`;
 
-      const propertyData = JSON.parse(
-        JSON.stringify(playerData.properties[propertyId])
+    async function updatePropertyStatus(
+      propertyId,
+      soldAtValue,
+      soldPrice,
+      playerData
+    ) {
+      if (isUpdating) {
+        alert('請等待當前操作完成');
+        return;
+      }
+      isUpdating = true;
+      try {
+        const updates = {};
+        const propertyPath = `rooms/${roomId}/players/${playerId}/properties/${propertyId}`;
+
+        const propertyData = JSON.parse(
+          JSON.stringify(playerData.properties[propertyId])
+        );
+        propertyData.soldAt = soldAtValue;
+        propertyData.soldPrice = soldPrice;
+
+        updates[propertyPath] = propertyData;
+        await update(ref(db), updates);
+
+        return true;
+      } catch (error) {
+        console.error('Error updating property status:', error);
+        throw error;
+      } finally {
+        isUpdating = false;
+      }
+    }
+
+    function renderPropertiesTable(roomData) {
+      if (!roomData.createdAt) return;
+
+      if (!Object.keys(roomData.players).includes(playerId)) {
+        window.location.href = `./student-lobby.html`;
+      }
+      let playerData = roomData.players[playerId];
+      if (savedJoinCode !== playerData.password) {
+        alert('加入失敗，請重新輸入邀請代碼！');
+        window.location.href = `./student-lobby.html`;
+      }
+
+      const stocksMap = new Map(
+        stocksData.map((stock) => [stock.id.substring(1), stock])
       );
-      propertyData.soldAt = soldAtValue;
-      propertyData.soldPrice = soldPrice;
+      const housesMap = new Map(
+        housesData.map((house) => [house.id.substring(1), house])
+      );
 
-      updates[propertyPath] = propertyData;
-      await update(ref(db), updates);
+      let tableHtml = generateTableHeader();
 
-      return true;
-    } catch (error) {
-      console.error('Error updating property status:', error);
-      throw error;
-    } finally {
-      isUpdating = false;
-    }
-  }
+      if (playerData.properties) {
+        const properties = Object.entries(playerData.properties)
+          .filter(
+            ([, property]) =>
+              !property.soldAt || property.soldAt === 0 || property.usedAt === 0
+          )
+          .sort(([, a], [, b]) => a.buyAt - b.buyAt);
 
-  function renderPropertiesTable(roomData) {
-    if (!roomData.createdAt) return;
+        properties.forEach(([key, property]) => {
+          tableHtml += generatePropertyRow(property, key, stocksMap, housesMap);
+        });
 
-    if (!Object.keys(roomData.players).includes(playerId)) {
-      window.location.href = `./student-lobby.html`;
-    }
-    let playerData = roomData.players[playerId];
-    if (savedJoinCode !== playerData.password) {
-      alert('加入失敗，請重新輸入邀請代碼！');
-      window.location.href = `./student-lobby.html`;
-    }
-
-    const stocksMap = new Map(
-      stocksData.map((stock) => [stock.id.substring(1), stock])
-    );
-    const housesMap = new Map(
-      housesData.map((house) => [house.id.substring(1), house])
-    );
-
-    let tableHtml = generateTableHeader();
-
-    if (playerData.properties) {
-      const properties = Object.entries(playerData.properties)
-        .filter(
-          ([, property]) =>
-            !property.soldAt || property.soldAt === 0 || property.usedAt === 0
-        )
-        .sort(([, a], [, b]) => a.buyAt - b.buyAt);
-
-      properties.forEach(([key, property]) => {
-        tableHtml += generatePropertyRow(property, key, stocksMap, housesMap);
-      });
-
-      if (properties.length === 0) {
+        if (properties.length === 0) {
+          tableHtml += getEmptyRow();
+        }
+      } else {
         tableHtml += getEmptyRow();
       }
-    } else {
-      tableHtml += getEmptyRow();
+
+      tableHtml += '</tbody></table>';
+      $('#held-properties-sec').html(tableHtml);
     }
 
-    tableHtml += '</tbody></table>';
-    $('#held-properties-sec').html(tableHtml);
-  }
-
-  function getEmptyRow() {
-    return `
+    function getEmptyRow() {
+      return `
       <tr style="height: 48px">
         <td class="align-middle text-center">-</td>
         <td class="align-middle text-center">-</td>
@@ -231,11 +314,14 @@ $(document).ready(async function () {
         <td class="align-middle text-center">-</td>
       </tr>
     `;
-  }
+    }
 
-  // 監聽房間狀態
-  onValue(roomRef, (snapshot) => {
-    if (snapshot.exists()) {
+    onValue(roomRef, (snapshot) => {
+      if (!isValidated) return;
+      if (!snapshot.exists()) {
+        window.location.href = './student-lobby.html';
+        return;
+      }
       const roomData = snapshot.val();
       $('#game-status').text(
         `當前回合：${roomData.gameState?.currentEvent || '等待中'}`
@@ -303,28 +389,16 @@ $(document).ready(async function () {
             : `（請注意下一回合要${nextGameRound.event}）`
         }`
       );
-    } else {
-      window.location.href = `./student-lobby.html`;
-    }
-  });
+    });
 
-  // 確保在 DOM 中存在 #dice-container
-  const diceModule = new DiceModule({
-    db,
-    roomId,
-    playerId,
-    container: '#dice-container',
-  });
+    const playerRef = ref(db, `rooms/${roomId}/players/${playerId}`);
 
-  const playerRef = ref(db, `rooms/${roomId}/players/${playerId}`);
-
-  if (roomId != '1234') {
-    alert('暫不開放其他教室');
-    return;
-  }
-
-  onValue(playerRef, (snapshot) => {
-    if (snapshot.exists()) {
+    onValue(playerRef, (snapshot) => {
+      if (!isValidated) return;
+      if (!snapshot.exists()) {
+        window.location.href = './student-lobby.html';
+        return;
+      }
       const playerData = snapshot.val();
       renderPropertiesTable(playerData);
 
@@ -389,19 +463,21 @@ $(document).ready(async function () {
           $('#dice-container').show();
           break;
       }
-    }
-  });
+    });
 
-  $('#dice-button').click(async function () {
-    $(this).prop('disabled', true);
-    try {
-      const updates = {};
-      updates[`rooms/${roomId}/players/${playerId}/rollStatus`] = 'rolled';
-      await update(ref(db), updates);
-      diceModule.diceSound.play().catch((e) => console.log('播放音效失敗:', e));
-    } catch (error) {
-      console.error('擲骰時出錯:', error);
-      $(this).prop('disabled', false);
-    }
-  });
+    $('#dice-button').click(async function () {
+      $(this).prop('disabled', true);
+      try {
+        const updates = {};
+        updates[`rooms/${roomId}/players/${playerId}/rollStatus`] = 'rolled';
+        await update(ref(db), updates);
+        diceModule.diceSound
+          .play()
+          .catch((e) => console.log('播放音效失敗:', e));
+      } catch (error) {
+        console.error('擲骰時出錯:', error);
+        $(this).prop('disabled', false);
+      }
+    });
+  }
 });

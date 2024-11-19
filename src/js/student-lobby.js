@@ -1,8 +1,50 @@
 import $ from 'jquery';
-import { ref, get, update } from 'firebase/database';
-import { db } from './common';
+import { ref, get, update, set } from 'firebase/database';
+import { auth, db } from './common';
+import { signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 
 $(document).ready(function () {
+  signInAnonymously(auth)
+    .then(() => {
+      console.log('匿名登入成功');
+    })
+    .catch((error) => {
+      console.error('匿名登入失敗:', error);
+      displayMessage('匿名登入失敗，請稍後再試。');
+    });
+
+  // 監聽認證狀態變化
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      console.log('已登入用戶:', user.uid);
+
+      try {
+        // 定義用戶在 Realtime Database 中的路徑
+        const userRef = ref(db, `users/${user.uid}`);
+
+        // 獲取用戶資料
+        const userSnapshot = await get(userRef);
+
+        // 如果用戶資料不存在，則設置 uid 和 createdAt
+        if (!userSnapshot.exists()) {
+          const createdAt = Math.floor(Date.now() / 1000);
+          await set(userRef, {
+            uid: user.uid,
+            createdAt: createdAt,
+          });
+          console.log(`用戶 ${user.uid} 的資料已創建。`);
+        } else {
+          console.log(`用戶 ${user.uid} 的資料已存在。`);
+        }
+      } catch (error) {
+        console.error('設置用戶資料時出錯:', error);
+      }
+
+      // 您可以在此處執行進一步操作，例如檢查是否已經綁定優惠券
+    } else {
+      console.log('用戶未登入');
+    }
+  });
   // 頁面加載時，檢查 localStorage 中是否有存儲的密碼
   const savedJoinCode = localStorage.getItem('lastJoinCode');
   if (savedJoinCode) {
