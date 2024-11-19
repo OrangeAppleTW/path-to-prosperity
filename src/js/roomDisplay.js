@@ -40,7 +40,7 @@ export class RoomDisplay {
         const joinedAt =
           player.joinedAt === 0
             ? '未加入'
-            : new Date(player.joinedAt * 1000).toLocaleString();
+            : new Date(player.joinedAt).toLocaleString();
         const status =
           player.joinedAt === 0
             ? "<span class='badge bg-secondary'>未加入</span>"

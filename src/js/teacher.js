@@ -153,7 +153,7 @@ async function validateCoupon(userId) {
     }
 
     const couponData = couponSnapshot.val();
-    const currentTime = Math.floor(Date.now() / 1000);
+    const currentTime = Date.now();
 
     if (currentTime >= couponData.expiredAt) {
       console.log('邀請碼已過期');

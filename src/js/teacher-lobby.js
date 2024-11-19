@@ -58,7 +58,7 @@ $(document).ready(function () {
 
         // 如果用戶資料不存在，則設置 uid 和 createdAt
         if (!userSnapshot.exists()) {
-          const createdAt = Math.floor(Date.now() / 1000);
+          const createdAt = Date.now();
           await set(userRef, {
             uid: user.uid,
             createdAt: createdAt,
@@ -119,7 +119,7 @@ $(document).ready(function () {
           couponCode = await promptAndValidateCoupon(user);
         } else {
           const couponData = existingCouponSnapshot.val();
-          const currentTime = Math.floor(Date.now() / 1000);
+          const currentTime = Date.now();
           if (currentTime >= couponData.expiredAt) {
             alert('您的邀請碼已過期。請輸入新的邀請碼。');
             $('#message-card').hide().empty();
@@ -181,7 +181,7 @@ $(document).ready(function () {
       } else {
         // 房間不存在，創建新房間
         const newRoomData = {
-          createdAt: Math.floor(Date.now() / 1000),
+          createdAt: Date.now(),
           owner: couponCode,
           gameState: {
             currentPlayer: 1,
@@ -263,7 +263,7 @@ $(document).ready(function () {
     }
 
     const couponData = couponSnapshot.val();
-    const currentTime = Math.floor(Date.now() / 1000);
+    const currentTime = Date.now();
     if (currentTime >= couponData.expiredAt) {
       alert('邀請碼已過期。');
       $('#message-card').hide().empty();
@@ -353,7 +353,7 @@ $(document).ready(function () {
         const joinedAt =
           player.joinedAt === 0
             ? '未加入'
-            : new Date(player.joinedAt * 1000).toLocaleString();
+            : new Date(player.joinedAt).toLocaleString();
         const status =
           player.joinedAt === 0
             ? "<span class='badge bg-secondary'>未加入</span>"

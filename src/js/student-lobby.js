@@ -27,7 +27,7 @@ $(document).ready(function () {
 
         // 如果用戶資料不存在，則設置 uid 和 createdAt
         if (!userSnapshot.exists()) {
-          const createdAt = Math.floor(Date.now() / 1000);
+          const createdAt = Date.now();
           await set(userRef, {
             uid: user.uid,
             createdAt: createdAt,
@@ -102,7 +102,7 @@ $(document).ready(function () {
               database,
               'rooms/' + roomId + '/players/' + playerId
             );
-            const currentTime = Math.floor(Date.now() / 1000);
+            const currentTime = Date.now();
             update(playerRef, { joinedAt: currentTime })
               .then(() => {
                 window.location.href = `./student.html?room=${roomId}&player=${playerId}`;

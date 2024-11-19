@@ -103,7 +103,7 @@ export class SettingsHandler {
       }
 
       const couponData = couponSnapshot.val();
-      const currentTime = Math.floor(Date.now() / 1000);
+      const currentTime = Date.now();
       if (currentTime >= couponData.expiredAt) {
         alert('邀請碼已過期。');
         return false;
