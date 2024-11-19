@@ -2,7 +2,8 @@
 
 import $ from 'jquery';
 import { ref, onValue, update } from 'firebase/database';
-import { db } from './common';
+import { auth, db } from './common';
+import { signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 import { Preloader } from './preloader';
 import { DragHandler } from './dragHandler';
 import { RoomDisplay } from './roomDisplay';
@@ -130,6 +131,25 @@ class DiceHandler {
 }
 
 $(document).ready(function () {
+  // 進行匿名登入
+  signInAnonymously(auth)
+    .then(() => {
+      console.log('匿名登入成功');
+    })
+    .catch((error) => {
+      console.error('匿名登入失敗:', error);
+      displayMessage('匿名登入失敗，請稍後再試。');
+    });
+
+  // 監聽認證狀態變化
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log('已登入用戶:', user.uid);
+      // 可以在此處執行進一步操作，例如檢查是否已經綁定優惠券
+    } else {
+      console.log('用戶未登入');
+    }
+  });
   let currentRoomData = null;
   let insuranceHandler;
   let savingsHandler;

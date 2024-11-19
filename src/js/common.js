@@ -17,28 +17,24 @@ import Cookies from 'js-cookie';
 
 // 引入 Firebase 模組
 import { initializeApp } from 'firebase/app';
-import { getAnalytics } from 'firebase/analytics';
 import { getDatabase } from 'firebase/database'; // 引入 Realtime Database
 import {
   getAuth,
-  signInWithPopup,
-  GoogleAuthProvider,
-  signOut,
+  setPersistence,
+  browserLocalPersistence,
 } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
 import $ from 'jquery';
 
 // Firebase 配置
 const firebaseConfig = {
-  apiKey: 'AIzaSyAhrrjOkQUk5vnYrGzZQSkUkEsXU15ya2M',
-  authDomain: 'path-to-prosperity.firebaseapp.com',
+  apiKey: 'AIzaSyDZ6yLJqFsW9zk9ye0g6Z_jgNZnR19BE88',
+  authDomain: 'oa-path-to-prosperity.firebaseapp.com',
   databaseURL:
-    'https://path-to-prosperity-default-rtdb.asia-southeast1.firebasedatabase.app',
-  projectId: 'path-to-prosperity',
-  storageBucket: 'path-to-prosperity.appspot.com',
-  messagingSenderId: '346731969351',
-  appId: '1:346731969351:web:4a9ced7e508c1edd242a62',
-  measurementId: 'G-N8XYGB34H5',
+    'https://oa-path-to-prosperity-default-rtdb.asia-southeast1.firebasedatabase.app',
+  projectId: 'oa-path-to-prosperity',
+  storageBucket: 'oa-path-to-prosperity.firebasestorage.app',
+  messagingSenderId: '1087785695196',
+  appId: '1:1087785695196:web:3164ccf2109ce23c0c8119',
 };
 
 // 初始化 Firebase
@@ -46,12 +42,13 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getDatabase(app);
 
-// 如果需要 Analytics，可以取消註解以下代碼
-// const analytics = getAnalytics(app);
-
-// 將 Firebase 和 jQuery 暴露到全域變數（如果需要在 HTML 中直接訪問）
-// window.firebase = { app, auth, db };
-// window.$ = $;
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    // 持久性設置成功
+  })
+  .catch((error) => {
+    console.error('設置認證持久性時出錯:', error);
+  });
 
 // 導出 Firebase 實例
 export { app, auth, db };

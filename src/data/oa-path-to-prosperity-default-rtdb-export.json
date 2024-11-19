@@ -1,0 +1,138 @@
+
+{
+  "coupons": {
+    "rq4HWuD2": {
+      "createdAt": 1731909782,
+      "expiredAt": 1732896000,
+      "permission": "host",
+      "usedLimit": 999
+    }
+  },
+  "rooms": {
+    "1234": {
+      "createdAt": 1731909197,
+      "gameState": {
+        "card": "stock-1",
+        "currentPlayer": "1",
+        "diceRoll": 1,
+        "gameRound": 1,
+        "houseRound": 0,
+        "insurances": 10,
+        "stockRound": 0
+      },
+      "players": [
+        null,
+        {
+          "animationFinishedRemind": false,
+          "cash": 0,
+          "currentDiceValue": 6,
+          "diceType": 2,
+          "joinedAt": 1731918235,
+          "lastDiceValue": 6,
+          "password": "1234CU",
+          "properties": [
+            null,
+            {
+              "buyAt": 1731912314512,
+              "buyPrice": 1200,
+              "property": "stock-4",
+              "soldAt": 0,
+              "type": "stock"
+            }
+          ],
+          "rollStatus": "completed",
+          "savings": 1000
+        },
+        {
+          "animationFinishedRemind": false,
+          "cash": 0,
+          "currentDiceValue": 0,
+          "diceType": 1,
+          "joinedAt": 0,
+          "lastDiceValue": 0,
+          "password": "1234MF",
+          "rollStatus": "idle",
+          "savings": 0
+        },
+        {
+          "animationFinishedRemind": false,
+          "cash": 0,
+          "currentDiceValue": 0,
+          "diceType": 1,
+          "joinedAt": 0,
+          "lastDiceValue": 0,
+          "password": "1234PS",
+          "rollStatus": "idle",
+          "savings": 0
+        },
+        {
+          "animationFinishedRemind": false,
+          "cash": 0,
+          "currentDiceValue": 0,
+          "diceType": 1,
+          "joinedAt": 0,
+          "lastDiceValue": 0,
+          "password": "1234QP",
+          "rollStatus": "idle",
+          "savings": 0
+        },
+        {
+          "animationFinishedRemind": false,
+          "cash": 0,
+          "currentDiceValue": 0,
+          "diceType": 1,
+          "joinedAt": 0,
+          "lastDiceValue": 0,
+          "password": "1234FT",
+          "rollStatus": "idle",
+          "savings": 0
+        },
+        {
+          "animationFinishedRemind": false,
+          "cash": 0,
+          "currentDiceValue": 0,
+          "diceType": 1,
+          "joinedAt": 0,
+          "lastDiceValue": 0,
+          "password": "1234FU",
+          "rollStatus": "idle",
+          "savings": 0
+        },
+        {
+          "animationFinishedRemind": false,
+          "cash": 0,
+          "currentDiceValue": 0,
+          "diceType": 1,
+          "joinedAt": 0,
+          "lastDiceValue": 0,
+          "password": "1234VP",
+          "rollStatus": "idle",
+          "savings": 0
+        },
+        {
+          "animationFinishedRemind": false,
+          "cash": 0,
+          "currentDiceValue": 0,
+          "diceType": 1,
+          "joinedAt": 0,
+          "lastDiceValue": 0,
+          "password": "1234BA",
+          "rollStatus": "idle",
+          "savings": 0
+        }
+      ]
+    }
+  },
+  "users": {
+    "MUgG3UZgXXaYYikAwc7LxdR3ZRG2": {
+      "coupon": "rq4HWuD2",
+      "createdAt": 1731922872971,
+      "uid": "MUgG3UZgXXaYYikAwc7LxdR3ZRG2"
+    },
+    "n5sMVNRjwybsXTIEFJOCFuE6lDs1": {
+      "coupon": "",
+      "createdAt": 1731916044844,
+      "uid": "n5sMVNRjwybsXTIEFJOCFuE6lDs1"
+    }
+  }
+}
