@@ -53,11 +53,11 @@ $(document).ready(async function () {
     return;
   }
 
-  if (roomId !== '1234') {
-    alert('暫不開放其他教室');
-    window.location.href = './student-lobby.html';
-    return;
-  }
+  // if (roomId !== '1234') {
+  //   alert('暫不開放其他教室');
+  //   window.location.href = './student-lobby.html';
+  //   return;
+  // }
 
   // 監聽認證狀態變化
   onAuthStateChanged(auth, async (user) => {

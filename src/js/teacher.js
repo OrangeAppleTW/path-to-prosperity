@@ -246,10 +246,10 @@ $(document).ready(function () {
     return;
   }
 
-  if (roomId != '1234') {
-    alert('暫不開放其他教室');
-    return;
-  }
+  // if (roomId != '1234') {
+  //   alert('暫不開放其他教室');
+  //   return;
+  // }
 
   // 初始化預載入器
   const preloader = new Preloader(baseURL);

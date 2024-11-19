@@ -152,12 +152,12 @@ $(document).ready(function () {
         return;
       }
 
-      if (roomCode !== '1234') {
-        // 如果有多個允許的房間代碼，可以進行擴展
-        alert('暫不開放其他房間');
-        $('#message-card').hide().empty();
-        return;
-      }
+      // if (roomCode !== '1234') {
+      //   // 如果有多個允許的房間代碼，可以進行擴展
+      //   alert('暫不開放其他房間');
+      //   $('#message-card').hide().empty();
+      //   return;
+      // }
 
       // 4. 獲取 Realtime Database 實例並設定房間參考
       const database = db;
@@ -185,6 +185,7 @@ $(document).ready(function () {
         // 房間不存在，創建新房間
         const newRoomData = {
           createdAt: Math.floor(Date.now() / 1000),
+          owner: auth.currentUser.uid,
           gameState: {
             currentPlayer: 1,
             card: 'stock-1',
@@ -306,7 +307,15 @@ $(document).ready(function () {
   }
 
   // 顯示玩家資訊的函數
-  function displayPlayers(players) {
+  async function displayPlayers(players) {
+    // 獲取房間資料以檢查擁有者
+    const roomRef = ref(db, `rooms/${currentRoomCode}`);
+    const roomSnapshot = await get(roomRef);
+    const roomData = roomSnapshot.val();
+    const currentUser = auth.currentUser;
+    const isOwner =
+      roomData && currentUser && roomData.owner === currentUser.uid;
+
     let htmlContent = `
     <div style="height: 50vh; overflow-y: scroll">
       <table class="table table-bordered m-0" >
@@ -318,7 +327,7 @@ $(document).ready(function () {
           </tr>
         </thead>
         <tbody>
-    `;
+  `;
 
     for (const playerId in players) {
       if (players.hasOwnProperty(playerId)) {
@@ -331,25 +340,28 @@ $(document).ready(function () {
           player.joinedAt === 0
             ? "<span class='badge bg-secondary'>未加入</span>"
             : "<span class='badge bg-success'>已加入</span>";
-
         htmlContent += `
-          <tr style="height: 48px" class="align-middle text-center">
+        <tr style="height: 48px" class="align-middle text-center">
           <td class="col-1 align-middle">${status}</td>
-            <td class="col-1 align-middle">玩家 ${playerId}</td>
-            <td class="col-1 align-middle">${player.password}</td>
-          </tr>
-        `;
+          <td class="col-1 align-middle">玩家 ${playerId}</td>
+          <td class="col-1 align-middle">${player.password}</td>
+        </tr>
+      `;
       }
     }
 
     htmlContent += `
-        </tbody>
-      </table>
-      </div>
-      <a class="w-100" href="./teacher.html?room=${currentRoomCode}">
-        <button type="button" class="mt-3 w-100 btn btn-success">前往房間</button>
-      </a>
-    `;
+      </tbody>
+    </table>
+    </div>
+    <a class="w-100" href="./teacher.html?room=${currentRoomCode}">
+      <button type="button" class="mt-3 w-100 text-light btn ${
+        isOwner ? 'btn-success' : 'btn-danger'
+      }">
+        ${isOwner ? '前往我創建的房間' : '前往其他人的房間'}
+      </button>
+    </a>
+  `;
 
     $('#message-card').html(htmlContent);
     $('#message-card').show();
