@@ -71,7 +71,7 @@ $(document).ready(function () {
         console.error('設置用戶資料時出錯:', error);
       }
 
-      // 您可以在此處執行進一步操作，例如檢查是否已經綁定優惠券
+      // 您可以在此處執行進一步操作，例如檢查是否已經綁定邀請碼
     } else {
       console.log('用戶未登入');
     }
@@ -88,10 +88,9 @@ $(document).ready(function () {
 
   // 當表單提交時觸發
   $('#room-form').submit(async function (e) {
-    e.preventDefault(); // 防止表單默認提交行為
-
+    e.preventDefault();
     const submitButton = $(this).find('button[type="submit"]');
-    submitButton.prop('disabled', true); // 禁用提交按鈕
+    submitButton.prop('disabled', true);
     displayMessage('正在處理請求...');
 
     try {
@@ -102,44 +101,42 @@ $(document).ready(function () {
         return;
       }
 
-      // 1. 檢查用戶是否已有優惠券
+      // 1. 檢查用戶是否已有邀請碼
       const userCouponRef = ref(db, `users/${user.uid}/coupon`);
       const userCouponSnapshot = await get(userCouponRef);
       let couponCode = null;
 
       if (userCouponSnapshot.exists()) {
-        // 用戶已有優惠券，直接使用
-        couponCode = userCouponSnapshot.val();
-        console.log('用戶已經擁有優惠券:', couponCode);
-
-        // 2. 驗證已存在的優惠券
-        const existingCouponRef = ref(db, `coupons/${couponCode}`);
+        // 用戶已有邀請碼，驗證其有效性
+        const existingCoupon = userCouponSnapshot.val();
+        const existingCouponRef = ref(db, `coupons/${existingCoupon}`);
         const existingCouponSnapshot = await get(existingCouponRef);
 
         if (!existingCouponSnapshot.exists()) {
-          alert('您的優惠券無效或不存在。請重新輸入邀請碼。');
+          alert('您的邀請碼無效或不存在。請重新輸入邀請碼。');
           $('#message-card').hide().empty();
-          await set(userCouponRef, null); // 移除無效的優惠券
+          await set(userCouponRef, null); // 移除無效的邀請碼
           couponCode = await promptAndValidateCoupon(user);
         } else {
           const couponData = existingCouponSnapshot.val();
           const currentTime = Math.floor(Date.now() / 1000);
           if (currentTime >= couponData.expiredAt) {
-            alert('您的優惠券已過期。請輸入新的邀請碼。');
+            alert('您的邀請碼已過期。請輸入新的邀請碼。');
             $('#message-card').hide().empty();
-            await set(userCouponRef, null); // 移除過期的優惠券
+            await set(userCouponRef, null); // 移除過期的邀請碼
             couponCode = await promptAndValidateCoupon(user);
           } else {
-            console.log('優惠券驗證成功，正在加入房間...');
+            // 邀請碼有效，詢問是否使用
+            couponCode = await promptAndValidateCoupon(user);
           }
         }
       } else {
-        // 用戶沒有優惠券，提示輸入
+        // 用戶沒有邀請碼，提示輸入
         couponCode = await promptAndValidateCoupon(user);
       }
 
       if (!couponCode) {
-        // 如果驗證失敗，提前退出
+        submitButton.prop('disabled', false);
         return;
       }
 
@@ -185,7 +182,7 @@ $(document).ready(function () {
         // 房間不存在，創建新房間
         const newRoomData = {
           createdAt: Math.floor(Date.now() / 1000),
-          owner: auth.currentUser.uid,
+          owner: couponCode,
           gameState: {
             currentPlayer: 1,
             card: 'stock-1',
@@ -233,19 +230,34 @@ $(document).ready(function () {
   });
 
   async function promptAndValidateCoupon(user) {
-    let couponCode = prompt('請輸入邀請碼')?.trim();
+    // 檢查用戶是否已有邀請碼
+    const userCouponRef = ref(db, `users/${user.uid}/coupon`);
+    const userCouponSnapshot = await get(userCouponRef);
+
+    if (userCouponSnapshot.exists()) {
+      const existingCoupon = userCouponSnapshot.val();
+      const useExisting = confirm(
+        `您已經綁定邀請碼: ${existingCoupon}\n是否要使用此邀請碼？\n點擊"確定"使用現有邀請碼\n點擊"取消"輸入新的邀請碼`
+      );
+
+      if (useExisting) {
+        return existingCoupon;
+      }
+    }
+
+    // 如果沒有現有邀請碼或用戶選擇輸入新的邀請碼
+    let couponCode = prompt('請輸入新的邀請碼')?.trim();
     if (!couponCode) {
       alert('請輸入邀請碼。');
       $('#message-card').hide().empty();
       return null;
     }
 
-    // 驗證優惠券
+    // 驗證邀請碼
     const couponRef = ref(db, `coupons/${couponCode}`);
     const couponSnapshot = await get(couponRef);
-
     if (!couponSnapshot.exists()) {
-      alert('優惠券無效或不存在。');
+      alert('邀請碼無效或不存在。');
       $('#message-card').hide().empty();
       return null;
     }
@@ -253,16 +265,14 @@ $(document).ready(function () {
     const couponData = couponSnapshot.val();
     const currentTime = Math.floor(Date.now() / 1000);
     if (currentTime >= couponData.expiredAt) {
-      alert('優惠券已過期。');
+      alert('邀請碼已過期。');
       $('#message-card').hide().empty();
       return null;
     }
 
-    // 將優惠券碼設定給使用者
-    const userCouponRef = ref(db, `users/${user.uid}/coupon`);
+    // 將新的邀請碼碼設定給使用者
     await set(userCouponRef, couponCode);
-    console.log('優惠券驗證成功，已儲存優惠券碼。');
-
+    console.log('邀請碼驗證成功，已儲存邀請碼碼。');
     return couponCode;
   }
 
@@ -312,9 +322,17 @@ $(document).ready(function () {
     const roomRef = ref(db, `rooms/${currentRoomCode}`);
     const roomSnapshot = await get(roomRef);
     const roomData = roomSnapshot.val();
+
+    // 獲取當前用戶的 coupon
     const currentUser = auth.currentUser;
-    const isOwner =
-      roomData && currentUser && roomData.owner === currentUser.uid;
+    const userCouponRef = ref(db, `users/${currentUser.uid}/coupon`);
+    const userCouponSnapshot = await get(userCouponRef);
+    const userCoupon = userCouponSnapshot.exists()
+      ? userCouponSnapshot.val()
+      : null;
+
+    // 檢查用戶的 coupon 是否匹配房間的 owner
+    const isOwner = roomData && userCoupon && roomData.owner === userCoupon;
 
     let htmlContent = `
     <div style="height: 50vh; overflow-y: scroll">

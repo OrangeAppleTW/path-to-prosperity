@@ -40,7 +40,7 @@ $(document).ready(function () {
         console.error('設置用戶資料時出錯:', error);
       }
 
-      // 您可以在此處執行進一步操作，例如檢查是否已經綁定優惠券
+      // 您可以在此處執行進一步操作，例如檢查是否已經綁定邀請碼
     } else {
       console.log('用戶未登入');
     }

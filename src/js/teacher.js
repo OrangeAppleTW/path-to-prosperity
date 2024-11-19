@@ -132,23 +132,23 @@ class DiceHandler {
 
 async function validateCoupon(userId) {
   try {
-    // 檢查用戶是否有優惠券
+    // 檢查用戶是否有邀請碼
     const userCouponRef = ref(db, `users/${userId}/coupon`);
     const userCouponSnapshot = await get(userCouponRef);
 
     if (!userCouponSnapshot.exists()) {
-      console.log('用戶沒有優惠券');
+      console.log('用戶沒有邀請碼');
       return false;
     }
 
     const couponCode = userCouponSnapshot.val();
 
-    // 驗證優惠券
+    // 驗證邀請碼
     const couponRef = ref(db, `coupons/${couponCode}`);
     const couponSnapshot = await get(couponRef);
 
     if (!couponSnapshot.exists()) {
-      console.log('優惠券不存在');
+      console.log('邀請碼不存在');
       return false;
     }
 
@@ -156,13 +156,13 @@ async function validateCoupon(userId) {
     const currentTime = Math.floor(Date.now() / 1000);
 
     if (currentTime >= couponData.expiredAt) {
-      console.log('優惠券已過期');
+      console.log('邀請碼已過期');
       return false;
     }
 
     return true;
   } catch (error) {
-    console.error('驗證優惠券時出錯:', error);
+    console.error('驗證邀請碼時出錯:', error);
     return false;
   }
 }
@@ -183,17 +183,17 @@ $(document).ready(function () {
 
       console.log('已登入用戶:', user.uid);
 
-      // 驗證優惠券
+      // 驗證邀請碼
       const isValid = await validateCoupon(user.uid);
 
       if (!isValid) {
-        alert('請先取得有效的優惠券');
+        alert('請先取得有效的邀請碼');
         window.location.href = './teacher-lobby.html';
         return;
       }
 
       // 如果驗證通過，繼續執行頁面初始化
-      console.log('優惠券驗證通過');
+      console.log('邀請碼驗證通過');
 
       // 這裡可以放置原本的初始化代碼
       // ...其餘的初始化代碼...
