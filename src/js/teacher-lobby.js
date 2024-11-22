@@ -121,7 +121,7 @@ $(document).ready(function () {
           const couponData = existingCouponSnapshot.val();
           const currentTime = Date.now();
           if (currentTime >= couponData.expiredAt) {
-            alert('您的邀請碼已過期。請輸入新的邀請碼。');
+            alert('您的邀請碼已過期。請輸入其他邀請碼。');
             $('#message-card').hide().empty();
             await set(userCouponRef, null); // 移除過期的邀請碼
             couponCode = await promptAndValidateCoupon(user);
@@ -246,7 +246,7 @@ $(document).ready(function () {
     }
 
     // 如果沒有現有邀請碼或用戶選擇輸入新的邀請碼
-    let couponCode = prompt('請輸入新的邀請碼')?.trim();
+    let couponCode = prompt('請輸入邀請碼')?.trim();
     if (!couponCode) {
       alert('請輸入邀請碼。');
       $('#message-card').hide().empty();
