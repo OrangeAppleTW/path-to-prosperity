@@ -237,7 +237,7 @@ $(document).ready(function () {
     if (userCouponSnapshot.exists()) {
       const existingCoupon = userCouponSnapshot.val();
       const useExisting = confirm(
-        `您已經綁定邀請碼: ${existingCoupon}\n是否要使用此邀請碼？\n點擊"確定"使用現有邀請碼\n點擊"取消"輸入新的邀請碼`
+        `您曾輸入此邀請碼: ${existingCoupon}\n是否要直接使用？\n點擊"確定"使用現有邀請碼\n點擊"取消"輸入新的邀請碼`
       );
 
       if (useExisting) {
