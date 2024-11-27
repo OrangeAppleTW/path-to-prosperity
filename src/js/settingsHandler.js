@@ -51,11 +51,7 @@ export class SettingsHandler {
           )
         ) {
           try {
-            // 驗證邀請碼
-            const isValid = await this.validateCoupon();
-            if (!isValid) {
-              return;
-            }
+            await this.resetRoom();
           } catch (error) {
             console.error('重置遊戲時發生錯誤:', error);
             alert('重置遊戲失敗，請稍後再試。');
@@ -65,100 +61,78 @@ export class SettingsHandler {
     }
   }
 
-  async validateCoupon() {
+  async resetRoom() {
     const user = auth.currentUser;
     if (!user) {
       alert('請先登入。');
       return false;
     }
 
-    let couponCode = prompt('請輸入邀請碼以確認重置權限')?.trim();
-    if (!couponCode) {
-      alert('請輸入邀請碼。');
+    let roomCode = prompt('請輸入房間代碼以確認重置')?.trim();
+    if (!roomCode) {
+      alert('請輸入房間代碼。');
       return false;
     }
 
     try {
-      // 先獲取房間資料，檢查 owner
+      // 檢查房間是否存在
       const roomRef = ref(this.db, `rooms/${this.roomId}`);
+      console.log(this.roomId);
       const roomSnapshot = await get(roomRef);
       if (!roomSnapshot.exists()) {
         alert('房間不存在。');
         return false;
       }
       const roomData = roomSnapshot.val();
+      console.log(roomData.password);
 
-      // 檢查輸入的 coupon 是否與房間的 owner 相同
-      if (couponCode !== roomData.owner) {
-        alert('您沒有權限重置此房間。');
+      // 檢查輸入的房間代碼是否正確
+      if (roomCode !== this.roomId + roomData.password) {
+        alert('房間代碼不正確。');
         return false;
       }
+      const existingPlayers = roomData.players || {};
 
-      // 驗證邀請碼是否有效
-      const couponRef = ref(this.db, `coupons/${couponCode}`);
-      const couponSnapshot = await get(couponRef);
-      if (!couponSnapshot.exists()) {
-        alert('邀請碼無效或不存在。');
-        return false;
-      }
+      const newRoomData = {
+        createdAt: roomData.createdAt,
+        expiredAt: roomData.expiredAt,
+        password: roomData.password,
+        gameState: {
+          currentPlayer: 1,
+          card: 'stock-1',
+          diceRoll: 1,
+          gameRound: 1,
+          stockRound: 0,
+          houseRound: 0,
+          insurances: 10,
+        },
+        players: {},
+      };
 
-      const couponData = couponSnapshot.val();
-      const currentTime = Date.now();
-      if (currentTime >= couponData.expiredAt) {
-        alert('邀請碼已過期。');
-        return false;
-      }
-
-      // 驗證成功後，重置房間狀態
-      if (couponCode === roomData.owner) {
-        // 保存現有的玩家資料
-        const existingPlayers = roomData.players || {};
-
-        // 建立新的房間數據，保留原本的 createdAt 和 owner
-        const newRoomData = {
-          createdAt: roomData.createdAt,
-          owner: roomData.owner,
-          gameState: {
-            currentPlayer: 1,
-            card: 'stock-1',
-            diceRoll: 1,
-            gameRound: 1,
-            stockRound: 0,
-            houseRound: 0,
-            insurances: 10,
-          },
-          players: {},
+      Object.keys(existingPlayers).forEach((playerId) => {
+        const player = existingPlayers[playerId];
+        newRoomData.players[playerId] = {
+          password: player.password,
+          joinedAt: player.joinedAt,
+          diceType: 1,
+          rollStatus: 'idle',
+          animationFinishedRemind: false,
+          currentDiceValue: 0,
+          lastDiceValue: 0,
+          savings: 0,
+          cash: 0,
+          properties: {},
         };
+      });
 
-        // 重新初始化每個玩家的狀態
-        Object.keys(existingPlayers).forEach((playerId) => {
-          const player = existingPlayers[playerId];
-          newRoomData.players[playerId] = {
-            // 保留原有的密碼和加入狀態
-            password: player.password,
-            joinedAt: player.joinedAt, // 保留原本的加入時間
-            // 重置遊戲相關狀態
-            diceType: 1,
-            rollStatus: player.joinedAt === 0 ? 'idle' : 'connecting',
-            animationFinishedRemind: false,
-            currentDiceValue: 0,
-            lastDiceValue: 0,
-            savings: 0,
-            cash: 0,
-            properties: {},
-          };
-        });
-
-        // 更新房間數據
-        await set(roomRef, newRoomData);
-        alert('遊戲狀態已重置成功！');
-        this.settingsModal.hide();
-        window.location.reload(); // 重新載入頁面以更新狀態
-        return true;
-      }
+      await set(roomRef, newRoomData);
+      alert('遊戲狀態已重置成功！');
+      this.settingsModal.hide();
+      window.location.reload();
+      return true;
     } catch (error) {
-      console.error('驗證邀請碼時發生錯誤:', error);
-      alert('驗證失敗，請先返回大廳重新綁定邀請碼，再進行此操作。');
+      console.error('重置房間時發生錯誤:', error);
+      alert('重置失敗，請稍後再試。');
       return false;
     }
   }

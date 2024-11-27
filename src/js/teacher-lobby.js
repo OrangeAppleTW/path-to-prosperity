@@ -78,7 +78,7 @@ $(document).ready(function () {
   });
 
   let currentListener = null; // 用於追蹤當前的監聽器函數
-  let currentRoomCode = null; // 用於追蹤當前的 roomCode
+  let currentRoomId = null; // 用於追蹤當前的 roomId
   const playNumLimit = 8;
 
   const savedRoomCode = localStorage.getItem('lastRoomCode');
@@ -101,46 +101,7 @@ $(document).ready(function () {
         return;
       }
 
-      // 1. 檢查用戶是否已有邀請碼
-      const userCouponRef = ref(db, `users/${user.uid}/coupon`);
-      const userCouponSnapshot = await get(userCouponRef);
-      let couponCode = null;
-
-      if (userCouponSnapshot.exists()) {
-        // 用戶已有邀請碼，驗證其有效性
-        const existingCoupon = userCouponSnapshot.val();
-        const existingCouponRef = ref(db, `coupons/${existingCoupon}`);
-        const existingCouponSnapshot = await get(existingCouponRef);
-
-        if (!existingCouponSnapshot.exists()) {
-          alert('您的邀請碼無效或不存在。請重新輸入邀請碼。');
-          $('#message-card').hide().empty();
-          await set(userCouponRef, null); // 移除無效的邀請碼
-          couponCode = await promptAndValidateCoupon(user);
-        } else {
-          const couponData = existingCouponSnapshot.val();
-          const currentTime = Date.now();
-          if (currentTime >= couponData.expiredAt) {
-            alert('您的邀請碼已過期。請輸入其他邀請碼。');
-            $('#message-card').hide().empty();
-            await set(userCouponRef, null); // 移除過期的邀請碼
-            couponCode = await promptAndValidateCoupon(user);
-          } else {
-            // 邀請碼有效，詢問是否使用
-            couponCode = await promptAndValidateCoupon(user);
-          }
-        }
-      } else {
-        // 用戶沒有邀請碼，提示輸入
-        couponCode = await promptAndValidateCoupon(user);
-      }
-
-      if (!couponCode) {
-        submitButton.prop('disabled', false);
-        return;
-      }
-
-      // 3. 獲取並驗證房間代碼
+      // 獲取房間代碼
       const roomCode = $('#room-input').val().trim();
       localStorage.setItem('lastRoomCode', roomCode);
 
@@ -149,136 +110,60 @@ $(document).ready(function () {
         return;
       }
 
-      // if (roomCode !== '1234') {
-      //   // 如果有多個允許的房間代碼，可以進行擴展
-      //   alert('暫不開放其他房間');
-      //   $('#message-card').hide().empty();
-      //   return;
-      // }
-
-      // 4. 獲取 Realtime Database 實例並設定房間參考
-      const database = db;
-      const roomRefPath = `rooms/${roomCode}`;
-      const roomRefDB = ref(database, roomRefPath);
-
-      // 5. 移除之前的監聽器（如果有）
-      if (currentListener && currentRoomCode) {
-        const oldPlayersRef = ref(database, `rooms/${currentRoomCode}/players`);
-        off(oldPlayersRef, 'value', currentListener);
-        currentListener = null;
-        currentRoomCode = null;
+      if (roomCode.length < 10) {
+        alert('房間代碼有誤，請重新確認！');
+        return;
       }
 
-      // 6. 檢查房間是否存在
+      const roomId = roomCode.slice(0, -6);
+      const roomPassword = roomCode.slice(-6);
+
+      // 設定資料庫參考
+      const database = db;
+      const roomRefPath = `rooms/${roomId}`;
+      const roomRefDB = ref(database, roomRefPath);
+
+      // 移除之前的監聽器
+      if (currentListener && currentRoomId) {
+        const oldPlayersRef = ref(database, `rooms/${currentRoomId}/players`);
+        off(oldPlayersRef, 'value', currentListener);
+        currentListener = null;
+        currentRoomId = null;
+      }
+
+      // 檢查房間是否存在
       const roomSnapshot = await get(roomRefDB);
 
       if (roomSnapshot.exists()) {
-        // 房間已存在，讀取資料並設置監聽器
         const roomData = roomSnapshot.val();
-        console.log('房間資料:', roomData);
-        displayMessage('房間已存在，正在讀取資料...');
-        listenToPlayers(roomCode, database);
-      } else {
-        // 房間不存在，創建新房間
-        const newRoomData = {
-          createdAt: Date.now(),
-          owner: couponCode,
-          gameState: {
-            currentPlayer: 1,
-            card: 'stock-1',
-            diceRoll: 1,
-            gameRound: 1,
-            stockRound: 0,
-            houseRound: 0,
-            insurances: 10,
-          },
-          players: {},
-        };
 
-        // 初始化玩家數量（假設 playNumLimit 已定義）
-        const uniqueCodes = generateUniqueCodes(playNumLimit);
-
-        for (let i = 1; i <= playNumLimit; i++) {
-          newRoomData.players[i] = {
-            password: roomCode + uniqueCodes[i - 1],
-            joinedAt: 0,
-            diceType: 1,
-            rollStatus: 'idle', // 狀態枚舉：idle, connecting, rolled, animationPlayed
-            animationFinishedRemind: false,
-            currentDiceValue: 0,
-            lastDiceValue: 0,
-            savings: 0,
-            cash: 0,
-            properties: {},
-          };
+        if (roomPassword != roomData.password) {
+          alert('代碼有誤，請重新輸入房間代碼！');
+          $('#message-card').hide().empty();
+          return;
         }
 
-        // 創建新房間
-        await set(roomRefDB, newRoomData);
-        console.log('新房間已創建:', newRoomData);
-        displayMessage('房間不存在，已創建新房間。');
-        listenToPlayers(roomCode, database);
+        if (Date.now() > roomData.expiredAt) {
+          alert('房間失效，請重新輸入房間代碼！');
+          $('#message-card').hide().empty();
+          return;
+        }
+
+        displayMessage('房間已存在,正在讀取資料...');
+        listenToPlayers(roomId, database);
       }
     } catch (error) {
       console.error('發生錯誤:', error);
-      alert('發生錯誤，請稍後再試。');
+      alert('發生錯誤,請稍後再試。');
       $('#message-card').hide().empty();
     } finally {
-      // 重新啟用提交按鈕
       submitButton.prop('disabled', false);
     }
   });
 
-  async function promptAndValidateCoupon(user) {
-    // 檢查用戶是否已有邀請碼
-    const userCouponRef = ref(db, `users/${user.uid}/coupon`);
-    const userCouponSnapshot = await get(userCouponRef);
-
-    if (userCouponSnapshot.exists()) {
-      const existingCoupon = userCouponSnapshot.val();
-      const useExisting = confirm(
-        `您曾輸入此邀請碼: ${existingCoupon}\n是否要直接使用？\n點擊「確定」使用現有邀請碼。\n點擊「取消」輸入新的邀請碼。`
-      );
-
-      if (useExisting) {
-        return existingCoupon;
-      }
-    }
-
-    // 如果沒有現有邀請碼或用戶選擇輸入新的邀請碼
-    let couponCode = prompt('請輸入邀請碼')?.trim();
-    if (!couponCode) {
-      alert('請輸入邀請碼。');
-      $('#message-card').hide().empty();
-      return null;
-    }
-
-    // 驗證邀請碼
-    const couponRef = ref(db, `coupons/${couponCode}`);
-    const couponSnapshot = await get(couponRef);
-    if (!couponSnapshot.exists()) {
-      alert('邀請碼無效或不存在。');
-      $('#message-card').hide().empty();
-      return null;
-    }
-
-    const couponData = couponSnapshot.val();
-    const currentTime = Date.now();
-    if (currentTime >= couponData.expiredAt) {
-      alert('邀請碼已過期。');
-      $('#message-card').hide().empty();
-      return null;
-    }
-
-    // 將新的邀請碼碼設定給使用者
-    await set(userCouponRef, couponCode);
-    console.log('邀請碼驗證成功，已儲存邀請碼碼。');
-    return couponCode;
-  }
-
   // 設置實時監聽器以監控 players 資料變更
-  function listenToPlayers(roomCode, database) {
-    const playersRef = ref(database, 'rooms/' + roomCode + '/players');
+  function listenToPlayers(roomId, database) {
+    const playersRef = ref(database, 'rooms/' + roomId + '/players');
 
     // 清空 message-card
     $('#message-card').html(`<p></p>`);
@@ -304,7 +189,7 @@ $(document).ready(function () {
 
     // 更新當前監聽的房間代碼和監聽器
     currentListener = listener;
-    currentRoomCode = roomCode;
+    currentRoomId = roomId;
 
     // 重新啟用提交按鈕
     const submitButton = $('#room-form').find('button[type="submit"]');
@@ -318,22 +203,6 @@ $(document).ready(function () {
 
   // 顯示玩家資訊的函數
   async function displayPlayers(players) {
-    // 獲取房間資料以檢查擁有者
-    const roomRef = ref(db, `rooms/${currentRoomCode}`);
-    const roomSnapshot = await get(roomRef);
-    const roomData = roomSnapshot.val();
-
-    // 獲取當前用戶的 coupon
-    const currentUser = auth.currentUser;
-    const userCouponRef = ref(db, `users/${currentUser.uid}/coupon`);
-    const userCouponSnapshot = await get(userCouponRef);
-    const userCoupon = userCouponSnapshot.exists()
-      ? userCouponSnapshot.val()
-      : null;
-
-    // 檢查用戶的 coupon 是否匹配房間的 owner
-    const isOwner = roomData && userCoupon && roomData.owner === userCoupon;
-
     let htmlContent = `
     <div style="height: 50vh; overflow-y: scroll">
       <table class="table table-bordered m-0" >
@@ -350,14 +219,11 @@ $(document).ready(function () {
     for (const playerId in players) {
       if (players.hasOwnProperty(playerId)) {
         const player = players[playerId];
-        const joinedAt =
-          player.joinedAt === 0
-            ? '未加入'
-            : new Date(player.joinedAt).toLocaleString();
         const status =
           player.joinedAt === 0
             ? "<span class='badge bg-secondary'>未加入</span>"
             : "<span class='badge bg-success'>已加入</span>";
+
         htmlContent += `
         <tr style="height: 48px" class="align-middle text-center">
           <td class="col-1 align-middle">${status}</td>
@@ -372,11 +238,9 @@ $(document).ready(function () {
       </tbody>
     </table>
     </div>
-    <a class="w-100" href="./teacher.html?room=${currentRoomCode}">
-      <button type="button" class="mt-3 w-100 text-light btn ${
-        isOwner ? 'btn-success' : 'btn-danger'
-      }">
-        ${isOwner ? '前往我創建的房間' : '前往其他人的房間'}
+    <a class="w-100" href="./teacher.html?room=${currentRoomId}">
+      <button type="button" class="mt-3 w-100 text-light btn btn-success">
+        前往房間
       </button>
     </a>
   `;

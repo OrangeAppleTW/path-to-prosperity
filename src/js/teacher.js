@@ -130,42 +130,42 @@ class DiceHandler {
   }
 }
 
-async function validateCoupon(userId) {
-  try {
-    // 檢查用戶是否有邀請碼
-    const userCouponRef = ref(db, `users/${userId}/coupon`);
-    const userCouponSnapshot = await get(userCouponRef);
+// async function validateCoupon(userId) {
+//   try {
+//     // 檢查用戶是否有邀請碼
+//     const userCouponRef = ref(db, `users/${userId}/coupon`);
+//     const userCouponSnapshot = await get(userCouponRef);
 
-    if (!userCouponSnapshot.exists()) {
-      console.log('用戶沒有邀請碼');
-      return false;
-    }
+//     if (!userCouponSnapshot.exists()) {
+//       console.log('用戶沒有邀請碼');
+//       return false;
+//     }
 
-    const couponCode = userCouponSnapshot.val();
+//     const couponCode = userCouponSnapshot.val();
 
-    // 驗證邀請碼
-    const couponRef = ref(db, `coupons/${couponCode}`);
-    const couponSnapshot = await get(couponRef);
+//     // 驗證邀請碼
+//     const couponRef = ref(db, `coupons/${couponCode}`);
+//     const couponSnapshot = await get(couponRef);
 
-    if (!couponSnapshot.exists()) {
-      console.log('邀請碼不存在');
-      return false;
-    }
+//     if (!couponSnapshot.exists()) {
+//       console.log('邀請碼不存在');
+//       return false;
+//     }
 
-    const couponData = couponSnapshot.val();
-    const currentTime = Date.now();
+//     const couponData = couponSnapshot.val();
+//     const currentTime = Date.now();
 
-    if (currentTime >= couponData.expiredAt) {
-      console.log('邀請碼已過期');
-      return false;
-    }
+//     if (currentTime >= couponData.expiredAt) {
+//       console.log('邀請碼已過期');
+//       return false;
+//     }
 
-    return true;
-  } catch (error) {
-    console.error('驗證邀請碼時出錯:', error);
-    return false;
-  }
-}
+//     return true;
+//   } catch (error) {
+//     console.error('驗證邀請碼時出錯:', error);
+//     return false;
+//   }
+// }
 
 $(document).ready(function () {
   let authInitialized = false;
@@ -184,16 +184,16 @@ $(document).ready(function () {
       console.log('已登入用戶:', user.uid);
 
       // 驗證邀請碼
-      const isValid = await validateCoupon(user.uid);
+      // const isValid = await validateCoupon(user.uid);
 
-      if (!isValid) {
-        alert('請先取得有效的邀請碼');
-        window.location.href = './teacher-lobby.html';
-        return;
-      }
+      // if (!isValid) {
+      //   alert('請先取得有效的邀請碼');
+      //   window.location.href = './teacher-lobby.html';
+      //   return;
+      // }
 
       // 如果驗證通過，繼續執行頁面初始化
-      console.log('邀請碼驗證通過');
+      // console.log('邀請碼驗證通過');
 
       // 這裡可以放置原本的初始化代碼
       // ...其餘的初始化代碼...
@@ -243,13 +243,9 @@ $(document).ready(function () {
 
   if (!roomId) {
     alert('無效的教室代碼');
+    window.location.href = `./teacher-lobby.html`;
     return;
   }
-
-  // if (roomId != '1234') {
-  //   alert('暫不開放其他教室');
-  //   return;
-  // }
 
   // 初始化預載入器
   const preloader = new Preloader(baseURL);
@@ -322,6 +318,19 @@ $(document).ready(function () {
         const roomData = snapshot.val();
         currentRoomData = roomData;
         // console.log('教室資料更新:', roomData);
+
+        const savedRoomCode = localStorage.getItem('lastRoomCode');
+
+        if (!savedRoomCode.includes(roomData.password)) {
+          alert('權限有誤，請重新輸入房間代碼！');
+          window.location.href = `./teacher-lobby.html`;
+        }
+
+        if (Date.now() > roomData.expiredAt) {
+          alert('房間失效，請重新輸入房間代碼！');
+          window.location.href = `./teacher-lobby.html`;
+        }
+
         roomDisplay.displayRoomInfo(roomData);
         selectors.player.updatePlayerList(roomData);
         const currentStockRound = Number(roomData.gameState.stockRound);

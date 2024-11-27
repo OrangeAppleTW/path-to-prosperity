@@ -57,7 +57,7 @@ $(document).ready(function () {
     let joinCode = $('#room-input').val().trim();
 
     if (joinCode === '') {
-      displayMessage('請輸入加入代碼。');
+      displayMessage('請輸入邀請代碼。');
       return;
     }
 
@@ -68,8 +68,8 @@ $(document).ready(function () {
 
     // 將輸入的代碼存儲到 localStorage
 
-    const roomId = joinCode.substring(0, 4);
-    const password = roomId + joinCode.substring(4).toUpperCase();
+    const roomId = joinCode.slice(0, -2);
+    const password = roomId + joinCode.slice(-2).toUpperCase();
     localStorage.setItem('lastJoinCode', password);
 
     const submitButton = $(this).find('button[type="submit"]');
