@@ -17,6 +17,11 @@ async function validateJoinCode(roomId, playerId, joinCode) {
       return false;
     }
 
+    if (playerSnapshot.val().joinedAt === 0) {
+      console.log('玩家不存在');
+      return false;
+    }
+
     const playerData = playerSnapshot.val();
     return playerData.password === joinCode;
   } catch (error) {
@@ -96,6 +101,18 @@ $(document).ready(async function () {
       roomId,
       playerId,
       container: '#dice-container',
+    });
+
+    window.addEventListener('beforeunload', async (event) => {
+      if (roomId && playerId && isValidated) {
+        try {
+          const updates = {};
+          updates[`rooms/${roomId}/players/${playerId}/joinedAt`] = 0;
+          await update(ref(db), updates);
+        } catch (error) {
+          console.error('更新 joinedAt 失敗:', error);
+        }
+      }
     });
 
     let currentRoomData = null;
