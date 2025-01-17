@@ -1,6 +1,6 @@
 // src/js/student.js
 import { DiceModule } from './diceModule';
-import { ref, onValue, update, get } from 'firebase/database';
+import { ref, onValue, update, get, onDisconnect } from 'firebase/database';
 import { auth, db } from './common';
 import { signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 import { Preloader } from './preloader';
@@ -103,7 +103,8 @@ $(document).ready(async function () {
       container: '#dice-container',
     });
 
-    window.addEventListener('beforeunload', async (event) => {
+    // 設置離線更新函數
+    const updateJoinedAtToZero = async () => {
       if (roomId && playerId && isValidated) {
         try {
           const updates = {};
@@ -113,7 +114,22 @@ $(document).ready(async function () {
           console.error('更新 joinedAt 失敗:', error);
         }
       }
+    };
+
+    // 處理各種離線情況
+    window.addEventListener('beforeunload', updateJoinedAtToZero);
+    window.addEventListener('pagehide', updateJoinedAtToZero);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        updateJoinedAtToZero();
+      }
     });
+
+    // 使用 Firebase 的 onDisconnect 機制
+    if (roomId && playerId) {
+      const playerRef = ref(db, `rooms/${roomId}/players/${playerId}/joinedAt`);
+      onDisconnect(playerRef).set(0);
+    }
 
     let currentRoomData = null;
     const preloader = new Preloader('/');
