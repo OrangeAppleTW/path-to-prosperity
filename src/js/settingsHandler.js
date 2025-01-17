@@ -97,6 +97,7 @@ export class SettingsHandler {
         createdAt: roomData.createdAt,
         expiredAt: roomData.expiredAt,
         password: roomData.password,
+        description: roomData.description,
         gameState: {
           currentPlayer: 1,
           card: 'stock-1',
