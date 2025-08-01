@@ -37,7 +37,21 @@ module.exports = {
         use: [
           'style-loader',
           'css-loader',
-          'sass-loader', // 加入 sass-loader
+          {
+            loader: 'sass-loader',
+            options: {
+              api: 'modern-compiler', // 使用現代編譯器 API
+              sassOptions: {
+                silenceDeprecations: [
+                  'legacy-js-api',
+                  'import',
+                  'global-builtin',
+                  'color-functions',
+                  'mixed-decls'
+                ], // 暫時抑制所有已知的警告
+              },
+            },
+          },
         ],
       },
       {
@@ -53,28 +67,6 @@ module.exports = {
         generator: {
           filename: 'assets/images/[name][ext][query]', // 確保與 output.assetModuleFilename 一致
         },
-        use: [
-          {
-            loader: 'image-webpack-loader',
-            options: {
-              disable: !isProduction, // 關閉在非生產環境
-              mozjpeg: {
-                progressive: true,
-                quality: 65,
-              },
-              optipng: {
-                enabled: false,
-              },
-              pngquant: {
-                quality: [0.65, 0.9],
-                speed: 4,
-              },
-              gifsicle: {
-                interlaced: false,
-              },
-            },
-          },
-        ],
       },
       {
         test: /\.(woff(2)?|eot|ttf|otf)$/,
