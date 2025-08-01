@@ -85,5 +85,5 @@
 
 ## 自訂網域 (Custom Domain)
 
-本專案使用 `CNAME` 檔案來設定自訂網域，指向 `oa-cfa.com`。當部署到 GitHub Pages 時，這個檔案會被自動複製到 `gh-pages` 分支的根目錄，以確保網域指向正確。
+本專案使用 `CNAME` 檔案來設定自訂網域，指向 `fq.orangeapple.co`。當部署到 GitHub Pages 時，這個檔案會被自動複製到 `gh-pages` 分支的根目錄，以確保網域指向正確。
 
