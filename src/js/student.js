@@ -17,11 +17,6 @@ async function validateJoinCode(roomId, playerId, joinCode) {
       return false;
     }
 
-    if (playerSnapshot.val().joinedAt === 0) {
-      console.log('玩家不存在');
-      return false;
-    }
-
     const playerData = playerSnapshot.val();
     return playerData.password === joinCode;
   } catch (error) {
@@ -117,11 +112,17 @@ $(document).ready(async function () {
     };
 
     // 處理各種離線情況
+    let disconnectedByVisibility = false;
+
     window.addEventListener('beforeunload', updateJoinedAtToZero);
     window.addEventListener('pagehide', updateJoinedAtToZero);
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
+        disconnectedByVisibility = true;
         updateJoinedAtToZero();
+      } else if (document.visibilityState === 'visible' && disconnectedByVisibility) {
+        disconnectedByVisibility = false;
+        autoReconnect();
       }
     });
 
@@ -426,6 +427,54 @@ $(document).ready(async function () {
 
     const playerRef = ref(db, `rooms/${roomId}/players/${playerId}`);
 
+    // 重連 modal 邏輯
+    const $reconnectOverlay = $('#reconnect-overlay');
+    const $reconnectLoading = $('#reconnect-loading');
+    const $reconnectManual = $('#reconnect-manual');
+    const $reconnectBtn = $('#reconnect-btn');
+
+    function showReconnectModal(mode) {
+      if (mode === 'loading') {
+        $reconnectLoading.show();
+        $reconnectManual.hide();
+      } else {
+        $reconnectLoading.hide();
+        $reconnectManual.show();
+      }
+      $reconnectOverlay.css('display', 'flex');
+    }
+
+    async function performReconnect() {
+      const updates = {};
+      updates[`rooms/${roomId}/players/${playerId}/joinedAt`] = Date.now();
+      await update(ref(db), updates);
+      const joinedAtRef = ref(db, `rooms/${roomId}/players/${playerId}/joinedAt`);
+      onDisconnect(joinedAtRef).set(0);
+      $reconnectOverlay.css('display', 'none');
+    }
+
+    async function autoReconnect() {
+      showReconnectModal('loading');
+      try {
+        await performReconnect();
+      } catch (error) {
+        console.error('自動重連失敗:', error);
+        showReconnectModal('manual');
+      }
+    }
+
+    $reconnectBtn.click(async function () {
+      $reconnectBtn.prop('disabled', true).text('連線中...');
+      try {
+        await performReconnect();
+      } catch (error) {
+        console.error('重連失敗:', error);
+        alert('重連失敗，請再試一次');
+      } finally {
+        $reconnectBtn.prop('disabled', false).text('重新連線');
+      }
+    });
+
     onValue(playerRef, (snapshot) => {
       if (!isValidated) return;
       if (!snapshot.exists()) {
@@ -433,6 +482,16 @@ $(document).ready(async function () {
         return;
       }
       const playerData = snapshot.val();
+
+      // 偵測斷線：joinedAt 為 0 時彈出重連 modal（若非自動重連中）
+      if (playerData.joinedAt === 0) {
+        if ($reconnectOverlay.css('display') === 'none') {
+          showReconnectModal('manual');
+        }
+        return;
+      }
+      $reconnectOverlay.css('display', 'none');
+
       renderPropertiesTable(playerData);
 
       // 更新骰子按鈕狀態

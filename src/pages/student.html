@@ -90,6 +90,23 @@
     <img src="assets/images/stepcard.png" alt="遊戲步驟" style="max-width:90%; max-height:90vh; display:block;" />
   </div>
 
+  <!-- 斷線重連 Modal -->
+  <div id="reconnect-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95); z-index:2000; align-items:center; justify-content:center; flex-direction:column;">
+    <div class="text-center">
+      <h2 class="text-white mb-4">連線已中斷</h2>
+      <!-- 自動重連 loading 狀態 -->
+      <div id="reconnect-loading" style="display:none;">
+        <div class="spinner-border text-light mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
+        <p class="text-light">正在重新連線...</p>
+      </div>
+      <!-- 手動重連按鈕 -->
+      <div id="reconnect-manual">
+        <p class="text-light mb-4">請點擊下方按鈕重新連線</p>
+        <button id="reconnect-btn" class="btn btn-success btn-lg px-5 py-3" style="font-size: 1.5rem;">重新連線</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 引入必要的腳本 -->
 </body>
 

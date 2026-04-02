@@ -11,27 +11,31 @@ function getImageFiles(dir) {
   return fs.readdirSync(dir).filter((f) => /\.(png|jpe?g)$/i.test(f));
 }
 
+function deleteExistingWebP(dir) {
+  const webpFiles = fs.readdirSync(dir).filter((f) => /\.webp$/i.test(f));
+  for (const file of webpFiles) {
+    fs.unlinkSync(path.join(dir, file));
+    console.log(`  🗑 刪除 ${file}`);
+  }
+  console.log(`\n已刪除 ${webpFiles.length} 張 WebP，開始重新壓縮...\n`);
+}
+
 async function convertToWebP(files) {
   let converted = 0;
-  let skipped = 0;
 
   for (const file of files) {
     const input = path.join(IMAGES_DIR, file);
     const output = path.join(IMAGES_DIR, file.replace(/\.(png|jpe?g)$/i, '.webp'));
-
-    if (fs.existsSync(output)) {
-      skipped++;
-      continue;
-    }
 
     await sharp(input).webp({ quality: 80 }).toFile(output);
     console.log(`  ✓ ${file} → ${path.basename(output)}`);
     converted++;
   }
 
-  console.log(`\n完成：轉換 ${converted} 張，略過已存在 ${skipped} 張`);
+  console.log(`\n完成：轉換 ${converted} 張`);
 }
 
+deleteExistingWebP(IMAGES_DIR);
 const files = getImageFiles(IMAGES_DIR);
 console.log(`找到 ${files.length} 張圖片，開始轉換為 WebP...\n`);
 convertToWebP(files).catch((err) => {

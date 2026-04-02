@@ -98,6 +98,12 @@ $(document).ready(function () {
           }
 
           if (playerId) {
+            const player = players[playerId];
+            if (player.joinedAt > 0) {
+              displayMessage('此玩家已在其他裝置上登入，請確認後再試。');
+              submitButton.prop('disabled', false);
+              return;
+            }
             const playerRef = ref(
               database,
               'rooms/' + roomId + '/players/' + playerId
