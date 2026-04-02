@@ -1,4 +1,1 @@
 #!/bin/sh
-export PATH="/Users/chenchungnien/.nvm/versions/node/v24.7.0/bin:$PATH"
-npm run convert-webp
-git add src/assets/images/*.webp 2>/dev/null || true
