@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Webpack Dev Server",
+      "runtimeExecutable": "/Users/chenchungnien/.nvm/versions/node/v24.7.0/bin/node",
+      "runtimeArgs": ["node_modules/.bin/webpack", "serve", "--mode", "development"],
+      "port": 9000
+    }
+  ]
+}

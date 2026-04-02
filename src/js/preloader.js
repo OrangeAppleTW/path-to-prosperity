@@ -56,24 +56,24 @@ export class Preloader {
       // 头像
       ...Array.from(
         { length: 8 },
-        (_, i) => `assets/images/avatar-${i + 1}.webp`
+        (_, i) => `assets/images/avatar-${i + 1}.png`
       ),
       // 游戏卡片
-      ...Array.from({ length: 5 }, (_, i) => `assets/images/game-${i + 1}.webp`),
+      ...Array.from({ length: 5 }, (_, i) => `assets/images/game-${i + 1}.png`),
       // 房屋卡片
       ...Array.from(
         { length: 20 },
-        (_, i) => `assets/images/house-${i + 1}.webp`
+        (_, i) => `assets/images/house-${i + 1}.png`
       ),
       // 风险卡片
       ...Array.from(
         { length: 28 },
-        (_, i) => `assets/images/risk-${i + 1}.webp`
+        (_, i) => `assets/images/risk-${i + 1}.png`
       ),
       // 股票卡片
       ...Array.from(
         { length: 36 },
-        (_, i) => `assets/images/stock-${i + 1}.webp`
+        (_, i) => `assets/images/stock-${i + 1}.png`
       ),
     ];
   }

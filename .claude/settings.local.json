@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /Users/chenchungnien/code/orangeapple/path-to-prosperity remote -v)",
+      "mcp__Claude_Preview__preview_start",
+      "Read(//Users/chenchungnien/.nvm/versions/node/**)",
+      "Read(//opt/homebrew/bin/**)",
+      "Read(//usr/local/bin/**)",
+      "Bash(command -v node)",
+      "Read(//usr/bin/**)",
+      "Read(//Users/chenchungnien/Library/**)",
+      "Bash(/usr/local/lib/node_modules/npm/bin/npm --version)",
+      "Bash(/Users/chenchungnien/.nvm/versions/node/v24.7.0/bin/npm --version)",
+      "WebSearch"
+    ]
+  }
+}
