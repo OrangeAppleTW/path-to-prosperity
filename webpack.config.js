@@ -62,7 +62,7 @@ module.exports = {
         },
       },
       {
-        test: /\.(png|jpe?g|gif|svg)$/i,
+        test: /\.(png|jpe?g|gif|svg|webp)$/i,
         type: 'asset/resource',
         generator: {
           filename: 'assets/images/[name][ext][query]', // 確保與 output.assetModuleFilename 一致
@@ -143,9 +143,7 @@ module.exports = {
   },
   mode: isProduction ? 'production' : 'development',
   devServer: {
-    static: {
-      directory: path.join(__dirname, 'dist'),
-    },
+    static: false,
     compress: true,
     port: 9000,
     open: true,

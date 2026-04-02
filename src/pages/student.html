@@ -12,9 +12,9 @@
 <body class="d-flex h-100 text-white bg-dark">
   <div id="content" class="container-fluid h-100 p-3 d-flex flex-column" style="display: none;">
     <!-- 玩家資訊區 -->
-    <div class="row mb-3">
-      <div class="col-10 pe-0">
-        <div class="card bg-dark border-light m-0">
+    <div class="d-flex mb-3">
+      <div class="flex-fill">
+        <div class="card bg-dark border-light m-0 h-100">
           <div class="card-body">
             <h5 class="card-title text-light m-0" id="player-info">
               玩家資訊載入中...
@@ -22,8 +22,9 @@
           </div>
         </div>
       </div>
-      <div class="col-2 ps-3">
-        <a href="./student-lobby.html">
+      <div class="ms-3 d-flex gap-3" style="width: 50vh">
+        <button type="button" id="stepcard-btn" class="btn btn-secondary text-light h-100 flex-fill">遊戲步驟</button>
+        <a href="./student-lobby.html" class="h-100 flex-fill">
           <button type="button" class="btn btn-success text-light h-100 w-100">返回大廳</button>
         </a>
       </div>
@@ -61,7 +62,7 @@
             </div>
           </div>
           <div
-            class="responsive-div border rounded border-light flex-fill mt-3 ms-3 p-3 d-flex flex-column justify-content-start">
+            class="responsive-div flex-fill mt-3 ms-3 d-flex flex-column justify-content-start">
             <div class="input-group mb-3 flex-fill">
               <span
                 class="input-group-text w-50 justify-content-center bg-success border-success text-white fs-5">儲蓄資產</span>
@@ -81,6 +82,12 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- 遊戲步驟 Overlay -->
+  <div id="stepcard-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:1050; align-items:center; justify-content:center;">
+    <button type="button" id="stepcard-close-btn" class="btn-close btn-close-white position-fixed" style="top:20px; left:20px; z-index:1060;" aria-label="Close"></button>
+    <img src="assets/images/stepcard.png" alt="遊戲步驟" style="max-width:90%; max-height:90vh; display:block;" />
   </div>
 
   <!-- 引入必要的腳本 -->

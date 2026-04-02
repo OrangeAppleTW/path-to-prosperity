@@ -362,7 +362,7 @@ export class CardDrawer {
         img.onload = resolve;
         img.onerror = resolve;
       });
-      img.src = `${this.baseURL}/assets/images/${prefix}-${i}.png`;
+      img.src = `${this.baseURL}/assets/images/${prefix}-${i}.webp`;
       images.push(img);
       imageLoadPromises.push(promise);
     }
@@ -429,7 +429,7 @@ export class CardDrawer {
       if (cardImage) {
         cardImage.style.opacity = 0;
         setTimeout(() => {
-          cardImage.src = `${this.baseURL}/assets/images/${prefix}-${selectedCard}.png`;
+          cardImage.src = `${this.baseURL}/assets/images/${prefix}-${selectedCard}.webp`;
           cardImage.style.opacity = 1;
         }, 300);
       }
@@ -563,10 +563,10 @@ export class CardDrawer {
 
           // 顯示最終結果
           if (cardImage1) {
-            cardImage1.src = `${this.baseURL}/assets/images/${this.currentPrefix}-${firstCard}.png`;
+            cardImage1.src = `${this.baseURL}/assets/images/${this.currentPrefix}-${firstCard}.webp`;
           }
           if (cardImage2) {
-            cardImage2.src = `${this.baseURL}/assets/images/${this.currentPrefix}-${secondCard}.png`;
+            cardImage2.src = `${this.baseURL}/assets/images/${this.currentPrefix}-${secondCard}.webp`;
           }
 
           this.isAnimating = false;
@@ -582,10 +582,10 @@ export class CardDrawer {
 
         // 顯示最終結果
         if (cardImage1) {
-          cardImage1.src = `${this.baseURL}/assets/images/${this.currentPrefix}-${firstCard}.png`;
+          cardImage1.src = `${this.baseURL}/assets/images/${this.currentPrefix}-${firstCard}.webp`;
         }
         if (cardImage2) {
-          cardImage2.src = `${this.baseURL}/assets/images/${this.currentPrefix}-${secondCard}.png`;
+          cardImage2.src = `${this.baseURL}/assets/images/${this.currentPrefix}-${secondCard}.webp`;
         }
 
         this.isAnimating = false;

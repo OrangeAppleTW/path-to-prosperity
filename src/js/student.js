@@ -442,7 +442,7 @@ $(document).ready(async function () {
       // 設定等待圖片的共用樣式
       const setWaitingImage = () => {
         $diceStatus.css({
-          'background-image': 'url(/assets/images/dice_wait.png)',
+          'background-image': 'url(/assets/images/dice_wait.webp)',
           'background-position': 'center bottom',
           'background-repeat': 'no-repeat',
           'background-size': 'cover',
@@ -453,7 +453,7 @@ $(document).ready(async function () {
         case 'connecting':
           $diceButton.prop('disabled', false).show();
           $diceStatus.css({
-            'background-image': 'url(/assets/images/dice_go.png)',
+            'background-image': 'url(/assets/images/dice_go.webp)',
             'background-position': 'center bottom',
             'background-repeat': 'no-repeat',
             'background-size': 'cover',
@@ -512,5 +512,20 @@ $(document).ready(async function () {
         $(this).prop('disabled', false);
       }
     });
+
+    const stepCardOverlay = document.getElementById('stepcard-overlay');
+    const stepCardBtn = document.getElementById('stepcard-btn');
+    const stepCardCloseBtn = document.getElementById('stepcard-close-btn');
+    if (stepCardOverlay && stepCardBtn && stepCardCloseBtn) {
+      stepCardBtn.addEventListener('click', () => {
+        stepCardOverlay.style.display = 'flex';
+      });
+      stepCardCloseBtn.addEventListener('click', () => {
+        stepCardOverlay.style.display = 'none';
+      });
+      stepCardOverlay.addEventListener('click', (e) => {
+        if (e.target === stepCardOverlay) stepCardOverlay.style.display = 'none';
+      });
+    }
   }
 });
