@@ -12,9 +12,6 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 // 引入 Bootstrap 的 JavaScript（包含 Popper.js）
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
-// 引入 js-cookie
-import Cookies from 'js-cookie';
-
 // 引入 Firebase 模組
 import { initializeApp } from 'firebase/app';
 import { getDatabase } from 'firebase/database'; // 引入 Realtime Database
