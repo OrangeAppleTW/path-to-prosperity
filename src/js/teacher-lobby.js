@@ -1,7 +1,7 @@
 // src/js/teacher-lobby.js
 
 import $ from 'jquery';
-import { ref, get, set, onValue, off } from 'firebase/database'; // 引入 Realtime Database 函數
+import { ref, get, set, update, onValue, off } from 'firebase/database'; // 引入 Realtime Database 函數
 import { auth, db } from './common';
 import { signInAnonymously, onAuthStateChanged } from 'firebase/auth';
 
@@ -201,6 +201,29 @@ $(document).ready(function () {
     $('#message-card').html(`<p>${message}</p>`);
   }
 
+  // 老師手動重置玩家連線（清除 joinedAt，讓學生可以重新輸入邀請代碼加入）
+  $('#message-card').on('click', '.reset-connection-button', async function () {
+    const playerId = $(this).data('player-id');
+    if (!currentRoomId || !playerId) return;
+
+    const confirmed = window.confirm(
+      `確定要重置玩家 ${playerId} 的連線狀態嗎？重置後該玩家需要重新輸入邀請代碼加入。`
+    );
+    if (!confirmed) return;
+
+    const button = $(this);
+    button.prop('disabled', true).text('處理中...');
+
+    try {
+      const playerRef = ref(db, `rooms/${currentRoomId}/players/${playerId}`);
+      await update(playerRef, { joinedAt: 0 });
+    } catch (error) {
+      console.error('重置連線狀態時出錯:', error);
+      alert('重置連線狀態失敗，請稍後再試。');
+      button.prop('disabled', false).text('重置連線狀態');
+    }
+  });
+
   // 顯示玩家資訊的函數
   async function displayPlayers(players) {
     let htmlContent = `
@@ -208,9 +231,10 @@ $(document).ready(function () {
       <table class="table table-bordered m-0" >
         <thead class="table-secondary">
           <tr style="height: 48px" class="align-middle text-center">
-            <th class="align-middle">玩家狀態</th>
+            <th class="align-middle">連線狀態</th>
             <th class="align-middle">玩家名稱</th>
             <th class="align-middle">邀請代碼</th>
+            <th class="align-middle">操作</th>
           </tr>
         </thead>
         <tbody>
@@ -229,6 +253,9 @@ $(document).ready(function () {
           <td class="col-1 align-middle">${status}</td>
           <td class="col-1 align-middle">玩家 ${playerId}</td>
           <td class="col-1 align-middle">${player.password}</td>
+          <td class="col-1 align-middle">
+            <button type="button" class="btn btn-sm btn-outline-danger reset-connection-button" data-player-id="${playerId}">重置連線狀態</button>
+          </td>
         </tr>
       `;
       }
