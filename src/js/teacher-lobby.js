@@ -33,6 +33,23 @@ function generateUniqueCodes(playNumLimit) {
   return Array.from(codes);
 }
 
+// 產生一個不與現有玩家邀請代碼重複的新代碼（格式為 roomId + 兩個字母）
+function generateUniquePlayerPassword(roomId, existingPasswords) {
+  const validLetters = 'ABCDEFGHJKMNPQRSTUVWXYZ';
+  let password;
+
+  do {
+    const firstChar =
+      validLetters[Math.floor(Math.random() * validLetters.length)];
+    const secondValidLetters = validLetters.replace(firstChar, '');
+    const secondChar =
+      secondValidLetters[Math.floor(Math.random() * secondValidLetters.length)];
+    password = roomId + firstChar + secondChar;
+  } while (existingPasswords.has(password));
+
+  return password;
+}
+
 $(document).ready(function () {
   // 進行匿名登入
   signInAnonymously(auth)
@@ -79,6 +96,7 @@ $(document).ready(function () {
 
   let currentListener = null; // 用於追蹤當前的監聽器函數
   let currentRoomId = null; // 用於追蹤當前的 roomId
+  let currentPlayersData = null; // 用於追蹤當前的玩家資料（供產生新邀請代碼時檢查重複）
   const playNumLimit = 8;
 
   const savedRoomCode = localStorage.getItem('lastRoomCode');
@@ -224,8 +242,44 @@ $(document).ready(function () {
     }
   });
 
+  // 老師手動重置玩家邀請代碼（產生新代碼並同時清除 joinedAt，讓舊代碼失效）
+  $('#message-card').on('click', '.reset-invite-code-button', async function () {
+    const playerId = $(this).data('player-id');
+    if (!currentRoomId || !playerId || !currentPlayersData) return;
+
+    const confirmed = window.confirm(
+      `確定要重置玩家 ${playerId} 的邀請代碼嗎？原本的代碼將立即失效，需要把新代碼告訴該玩家。`
+    );
+    if (!confirmed) return;
+
+    const button = $(this);
+    button.prop('disabled', true).text('處理中...');
+
+    try {
+      const existingPasswords = new Set(
+        Object.values(currentPlayersData)
+          .filter(Boolean)
+          .map((player) => player.password)
+      );
+      const newPassword = generateUniquePlayerPassword(
+        currentRoomId,
+        existingPasswords
+      );
+
+      const playerRef = ref(db, `rooms/${currentRoomId}/players/${playerId}`);
+      await update(playerRef, { password: newPassword, joinedAt: 0 });
+
+      alert(`玩家 ${playerId} 的新邀請代碼為：${newPassword}\n請將新代碼告訴該玩家。`);
+    } catch (error) {
+      console.error('重置邀請代碼時出錯:', error);
+      alert('重置邀請代碼失敗，請稍後再試。');
+      button.prop('disabled', false).text('重置邀請代碼');
+    }
+  });
+
   // 顯示玩家資訊的函數
   async function displayPlayers(players) {
+    currentPlayersData = players;
     let htmlContent = `
     <div style="height: 50vh; overflow-y: scroll">
       <table class="table table-bordered m-0" >
@@ -255,6 +309,7 @@ $(document).ready(function () {
           <td class="col-1 align-middle">${player.password}</td>
           <td class="col-1 align-middle">
             <button type="button" class="btn btn-sm btn-outline-danger reset-connection-button" data-player-id="${playerId}">重置連線狀態</button>
+            <button type="button" class="btn btn-sm btn-outline-warning reset-invite-code-button" data-player-id="${playerId}">重置邀請代碼</button>
           </td>
         </tr>
       `;
